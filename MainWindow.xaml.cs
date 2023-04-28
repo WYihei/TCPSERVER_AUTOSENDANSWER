@@ -39,9 +39,9 @@ namespace tcp_auto
             this.Resources["serverStr"] = new TextBlock() { Text = "SERVER已开启" };
             //一打开 就开启server
             //测试的时候先写死   之后变成灵活输入端    192.168.10.23:8080 ip4
-            string serverAddress = "10.198.75.60:8080";
+            //string serverAddress = "10.198.75.60:8080";
             //string serverAddress = "192.168.10.23:8080";
-            //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+            string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
             server = new SimpleTcpServer(serverAddress);
             server.Start();
             bool flag = true;
