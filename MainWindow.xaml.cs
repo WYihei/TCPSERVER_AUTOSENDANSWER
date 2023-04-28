@@ -39,20 +39,21 @@ namespace tcp_auto
             this.Resources["serverStr"] = new TextBlock() { Text = "SERVER已开启" };
             //一打开 就开启server
             //测试的时候先写死   之后变成灵活输入端    192.168.10.23:8080 ip4
-            //string serverAddress = "192.168.17.103:8080";
-            string serverAddress = "192.168.10.23:8080";
+            string serverAddress = "10.198.75.60:8080";
+            //string serverAddress = "192.168.10.23:8080";
             //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
             server = new SimpleTcpServer(serverAddress);
             server.Start();
-            MessageBox.Show("已连接client，client可以发送消息");
-            //client发送的数据    server数据接收区得到      server数据发送区发送
-            server.Events.DataReceived += Events_DataReceived;           
-            
             bool flag = true;
             if (flag)
             {
                 this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
-            }           
+            }
+            MessageBox.Show("已连接client，client可以发送消息");
+            //client发送的数据    server数据接收区得到      server数据发送区发送
+            server.Events.DataReceived += Events_DataReceived;           
+            
+                     
         }
         //接收到    client发送的数据
         private void Events_DataReceived(object? sender, DataReceivedEventArgs e)

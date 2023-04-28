@@ -144,7 +144,8 @@ namespace tcp_auto
                         //提示弹窗即可
                         for (int i = 0; i < DataDridKVs.Count; i++)
                         {
-                            if (DataDridKVs[i].DataKey.Contains(KeyMess))
+                            //if (DataDridKVs[i].DataKey.Contains(KeyMess))
+                            if (DataDridKVs[i].DataKey.Contains(KeyMess)&& DataDridKVs[i].DataKey.Length== KeyMess.Length)
                             {
                                 MessageBox.Show("存在重复的键");
                                 return;
