@@ -63,7 +63,7 @@ namespace tcp_auto
         //连接web
         private void LinkCommand(object sender, RoutedEventArgs e)
         {
-            this.Resources["serverStr"] = new TextBlock() { Text = "SERVER已开启" };
+            this.Resources["serverStr"] = new TextBlock() { Text = "关闭SERVER" };
             //一打开 就开启server
             //测试的时候先写死   之后变成灵活输入端    192.168.10.23:8080 ip4
             //string serverAddress = "10.198.75.60:8080";
@@ -80,30 +80,27 @@ namespace tcp_auto
             //client发送的数据    server数据接收区得到      server数据发送区发送
             server.Events.DataReceived += Events_DataReceived;
 
-
-
-
+            string[] defLines = File.ReadAllLines(@"Data.txt");
+            for (int i = 0; i < defLines.Length; i++)
+            {
+                //split
+                string item = defLines[i];
+                string[] values = item.Split(',');
+                dictionary.Add(values[0], values[1]);
+            }
 
             //存储     path和       content的全部数据
-            //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
-
-            
-            //string allContents = "";
-            //for (int i = 0; i < DataDridKVs.Count; i++)
-            //{
-            //    MainModel item = DataDridKVs[i];
-            //    //string line = "";
-            //    //line += $"{item.DataKey},{item.DataValue}\n";
-            //    //allContents += line;
-            //}
-
-            //string line = "";
             string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
-            //allContents += line;
-
             System.IO.File.WriteAllText(@"IpPort.txt", line);
 
-
+            //if (this.Resources["serverStr"] ={ "SERVER已开启"};)
+            //{
+            //    server.Stop();
+            //}
+            //else
+            //{
+            //    server.Stop();
+            //}
         }
         //接收到    client发送的数据
         private void Events_DataReceived(object? sender, DataReceivedEventArgs e)
@@ -122,7 +119,7 @@ namespace tcp_auto
                 {
                     //UI界面上显示
                     //DataGet.Text = getContent;
-                    DataGet.Text = getContent+ clientIpPort;
+                    DataGet.Text = getContent+"_IpPort是_"+ clientIpPort;
                     DataSend.Text = dictionary[getContent];
                     //server传送出
                     string serverSend = dictionary[getContent];
@@ -134,8 +131,8 @@ namespace tcp_auto
                 }
                 else
                 {
-                    DataGet.Text = getContent + "   " + clientIpPort;
-                    //DataSend.Text = "抱歉，该键没有相对应的值";
+                    DataGet.Text = getContent + "_IpPort是_" + clientIpPort;
+                    DataSend.Text = "抱歉，该键没有相对应的值";
                     return;
                 }
             });

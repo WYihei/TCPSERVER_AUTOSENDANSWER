@@ -41,9 +41,12 @@ namespace tcp_auto
             //    DataKey = "111",
             //    DataValue = "222"
             //});
+
+
+            
         }
 
-        
+        Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
         public void readDatagrid()
         {        
@@ -58,36 +61,8 @@ namespace tcp_auto
                 {
                     DataKey = double.Parse(values[0].Replace(" ", "")).ToString(),
                     DataValue = double.Parse(values[1].Replace(" ", "")).ToString(),
-
                 });
-                Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
             }
-            
-
-
-
-
-
-
-
-            //for (int i = 0; i < DataDridKVs.Count; i++)
-            //{
-            //    //if (DataDridKVs[i].DataKey.Contains(KeyMess))
-            //    if (DataDridKVs[i].DataKey.Contains(KeyMess) && DataDridKVs[i].DataKey.Length == KeyMess.Length)
-            //    {
-            //        MessageBox.Show("存在重复的键");
-            //        return;
-            //    }
-              
-            //}
-
-            //DataDridKVs.Add(new MainModel()
-            //{
-            //    DataKey = KeyMess,
-            //    DataValue = ValueMess
-            //});
-
-            //Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
         }
 
 
@@ -98,8 +73,6 @@ namespace tcp_auto
             //DataKey = KeyMess,
             //            DataValue = ValueMess
             //        });
-
-
 
             //get { return _dataDridKVs; }
             //set

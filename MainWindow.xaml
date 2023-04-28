@@ -9,7 +9,7 @@
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <!-- Width="800" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}"-->
     <Window.Resources>
-        <TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>
+        <TextBlock x:Key="serverStr" Text="开启SERVER"></TextBlock>
     </Window.Resources>
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
@@ -69,12 +69,42 @@
                     <Button.Template >
                         <ControlTemplate  >
                             <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="2" Background="{TemplateBinding Background}" >
-                                <!--<ContentPresenter Content="开启SERVER" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>-->
                                 <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
+
+
+                <!--<Button Height="30" Margin="0 40 0 0"  x:Name="linkButton" BorderBrush="{x:Null}" BorderThickness="0" Content="开启SERVER" >
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#FBC12D"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                
+                                        <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="2" Background="{TemplateBinding Background}" >
+                                            <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ClickMode"  Value="Hover">
+                                               
+                                                <Setter Property="Content" Value="关闭SERVER"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>-->
+
+
+
+
+
             </StackPanel>
         </Grid>
 
@@ -235,7 +265,7 @@
                             </Button.Template>
                         </Button>
                     </WrapPanel>
-                    <WrapPanel Margin="0 20 0 0">
+                    <!--<WrapPanel Margin="0 20 0 0">
                         <Button                   
                         Width="60"
                         Height="25"
@@ -263,7 +293,7 @@
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
-                    </WrapPanel>
+                    </WrapPanel>-->
                 </StackPanel>
                 
                
