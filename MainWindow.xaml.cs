@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -31,7 +32,33 @@ namespace tcp_auto
             //数据收 发
             Messenger.Default.Register<Tuple<string, string>>(this, "SendMess", GetSendMess);
             Messenger.Default.Register<MainModel>(this, "RemoveMess", GetRemoveMess);
+            readIpPort();
         }
+
+        public void readIpPort()
+        {
+            if (!File.Exists(@"IpPort.txt"))
+            {
+                //不存在文件
+                return;
+            }
+            else
+            {
+                //读取
+                //return;
+                string[] defLines = File.ReadAllLines(@"IpPort.txt");
+                for (int i = 0; i < defLines.Length; i++)
+                {
+                    //split
+                    string item = defLines[i];
+                    string[] values = item.Split(',');
+
+                    this.IpAddress.Text = values[0].ToString();
+                    this.PortNum.Text = values[1].ToString();
+                }
+            }
+        }
+
         SimpleTcpServer server;
         //连接web
         private void LinkCommand(object sender, RoutedEventArgs e)
@@ -51,9 +78,32 @@ namespace tcp_auto
             }
             MessageBox.Show("已连接client，client可以发送消息");
             //client发送的数据    server数据接收区得到      server数据发送区发送
-            server.Events.DataReceived += Events_DataReceived;           
+            server.Events.DataReceived += Events_DataReceived;
+
+
+
+
+
+            //存储     path和       content的全部数据
+            //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+
             
-                     
+            //string allContents = "";
+            //for (int i = 0; i < DataDridKVs.Count; i++)
+            //{
+            //    MainModel item = DataDridKVs[i];
+            //    //string line = "";
+            //    //line += $"{item.DataKey},{item.DataValue}\n";
+            //    //allContents += line;
+            //}
+
+            //string line = "";
+            string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+            //allContents += line;
+
+            System.IO.File.WriteAllText(@"IpPort.txt", line);
+
+
         }
         //接收到    client发送的数据
         private void Events_DataReceived(object? sender, DataReceivedEventArgs e)
@@ -71,7 +121,8 @@ namespace tcp_auto
                 if (dictionary.ContainsKey(getContent))
                 {
                     //UI界面上显示
-                    DataGet.Text = getContent;
+                    //DataGet.Text = getContent;
+                    DataGet.Text = getContent+ clientIpPort;
                     DataSend.Text = dictionary[getContent];
                     //server传送出
                     string serverSend = dictionary[getContent];
@@ -82,7 +133,9 @@ namespace tcp_auto
                     server.Send(clientIpPort, serverSend);
                 }
                 else
-                { 
+                {
+                    DataGet.Text = getContent + "   " + clientIpPort;
+                    //DataSend.Text = "抱歉，该键没有相对应的值";
                     return;
                 }
             });

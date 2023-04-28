@@ -20,27 +20,76 @@ namespace tcp_auto
         public MainWindowViewModel()
         {
             InitData();
+
+            readDatagrid();
+            
         }
 
         private void InitData()
         {
             DataDridKVs = new ObservableCollection<MainModel>();
-            
+
+            //便于查看  之后删除
             //DataDridKVs.Add(new MainModel()
             //{
             //    DataKey = "111",
             //    DataValue = "222"
             //});
 
-
-
-            //便于查看  之后注
             //DataDridKVs.Add(new MainModel()
             //{
             //    DataKey = "111",
             //    DataValue = "222"
             //});
         }
+
+        
+
+        public void readDatagrid()
+        {        
+            string[] defLines = File.ReadAllLines(@"Data.txt");
+            for (int i = 0; i < defLines.Length; i++)
+            {
+                //split
+                string item = defLines[i];
+                string[] values = item.Split(',');
+
+                DataDridKVs.Add(new MainModel()
+                {
+                    DataKey = double.Parse(values[0].Replace(" ", "")).ToString(),
+                    DataValue = double.Parse(values[1].Replace(" ", "")).ToString(),
+
+                });
+                Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
+            }
+            
+
+
+
+
+
+
+
+            //for (int i = 0; i < DataDridKVs.Count; i++)
+            //{
+            //    //if (DataDridKVs[i].DataKey.Contains(KeyMess))
+            //    if (DataDridKVs[i].DataKey.Contains(KeyMess) && DataDridKVs[i].DataKey.Length == KeyMess.Length)
+            //    {
+            //        MessageBox.Show("存在重复的键");
+            //        return;
+            //    }
+              
+            //}
+
+            //DataDridKVs.Add(new MainModel()
+            //{
+            //    DataKey = KeyMess,
+            //    DataValue = ValueMess
+            //});
+
+            //Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
+        }
+
 
         public ObservableCollection<MainModel> DataDridKVs
         {
@@ -173,6 +222,19 @@ namespace tcp_auto
 
                         Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
 
+                        //存储     path和       content的全部数据
+                        string allContents = "";
+                        for (int i = 0; i < DataDridKVs.Count; i++)
+                        {
+                            MainModel item = DataDridKVs[i];
+                            string line = "";
+                            line += $"{item.DataKey},{item.DataValue}\n";
+                            allContents += line;
+                        }
+      
+                        System.IO.File.WriteAllText(@"Data.txt", allContents);
+
+                        //随后删除
                         //for (int i = 0; i < DataDridKVs.Count; i++)
                         //{
                         //    if (DataDridKVs[i].DataKey.Contains(KeyMess))
@@ -268,6 +330,20 @@ namespace tcp_auto
                                 Messenger.Default.Send<MainModel>(mainModel, "RemoveMess");
                             }
                             DataDridKVs.RemoveAt(SelectedIndex);
+
+
+
+                            //存储     path和       content的全部数据
+                            string allContents = "";
+                            for (int i = 0; i < DataDridKVs.Count; i++)
+                            {
+                                MainModel item = DataDridKVs[i];
+                                string line = "";
+                                line += $"{item.DataKey},{item.DataValue}\n";
+                                allContents += line;
+                            }
+
+                            System.IO.File.WriteAllText(@"Data.txt", allContents);
                         }
                     });
                 });
@@ -280,23 +356,23 @@ namespace tcp_auto
             {
                 return new RelayCommand<object>((obj) =>
                 {
-                    SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Filter = "键值匹配|*.txt";
-                    if (saveFileDialog.ShowDialog() == true)
-                    {
-                        //存储的path
-                        var filePaths = saveFileDialog.FileName;
-                        //path和       content的全部数据                      
-                        string allContents = "";
-                        for (int i = 0; i < DataDridKVs.Count; i++)
-                        {
-                            MainModel item = DataDridKVs[i];
-                            string line = "";
-                            line += $"{item.DataKey},{item.DataValue}\n";
-                            allContents += line;
-                        }
-                        File.WriteAllText(filePaths, allContents);
-                    }
+                    //SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    //saveFileDialog.Filter = "键值匹配|*.txt";
+                    //if (saveFileDialog.ShowDialog() == true)
+                    //{
+                    //    //存储的path
+                    //    var filePaths = saveFileDialog.FileName;
+                    //    //path和       content的全部数据                      
+                    //    string allContents = "";
+                    //    for (int i = 0; i < DataDridKVs.Count; i++)
+                    //    {
+                    //        MainModel item = DataDridKVs[i];
+                    //        string line = "";
+                    //        line += $"{item.DataKey},{item.DataValue}\n";
+                    //        allContents += line;
+                    //    }
+                    //    File.WriteAllText(filePaths, allContents);
+                    //}
                 });
             }
         }
@@ -313,7 +389,6 @@ namespace tcp_auto
                     {
                         var filePaths = fileDialog.FileName;
                         string[] defLines = File.ReadAllLines(filePaths);
-
                         for (int i = 0; i < defLines.Length; i++)
                         {
                             //split
@@ -325,8 +400,9 @@ namespace tcp_auto
                                 DataKey = double.Parse(values[0].Replace(" ", "")).ToString(),
                                 DataValue = double.Parse(values[1].Replace(" ", "")).ToString(),
                             });
-
+                            //Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
                         }
+                        
                     }
                 });
             }
