@@ -154,7 +154,7 @@ namespace tcp_auto
                 {
                     DataShow.Text += currentTime + "  " + clientIpPort + "\r\n" + "SEND " + "\r\n" + getContent;
                     //var textGreen = new SolidColorBrush(Colors.Green);
-                    //DataShow.Foreground = textGreen;//改变字体颜色
+                    //DataShow.Foreground = textGreen;//改变字体颜色 
 
                     //DataGet.Text = getContent + "  IpPort是:" + clientIpPort;
                     //DataSend.Text = "该键没有对应值";
