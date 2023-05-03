@@ -33,5 +33,19 @@ namespace tcp_auto
                 NotifyChanged();
             }
         }
+
+        //是否禁用
+        //private bool _use;
+        //private bool _use;
+
+        //public bool Use
+        //{
+        //    get { return _use; }
+        //    set
+        //    {
+        //        _use = value;
+        //        NotifyChanged();
+        //    }
+        //}
     }
 }

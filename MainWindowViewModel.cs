@@ -118,9 +118,19 @@ namespace tcp_auto
                 NotifyChanged();
             }
         }
+        
+        //是否启用
+        private bool _useKV;
 
-
-
+        public bool UseKV
+        {
+            get { return _useKV; }
+            set
+            {
+                _useKV = value;
+                NotifyChanged();
+            }
+        }
 
 
         //键
@@ -172,6 +182,14 @@ namespace tcp_auto
                                 MessageBox.Show("存在重复的键");
                                 return;
                             }
+
+                            //启用
+                            //if (DataDridKVs[i].Use == true)
+                            //{
+                            //    MessageBox.Show("存在重复的键");
+                            //    return;
+                            //}
+
                             //else
                             //{
                             //    DataDridKVs.Add(new MainModel()
@@ -189,6 +207,7 @@ namespace tcp_auto
 
                         DataDridKVs.Add(new MainModel()
                         {
+                            //Use = true,
                             DataKey = KeyMess,
                             DataValue = ValueMess
                         });

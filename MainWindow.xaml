@@ -6,21 +6,26 @@
         xmlns:local="clr-namespace:tcp_auto"
         mc:Ignorable="d"
         Title="TCP-ASSIST" 
+        Width="800"
+        Height="400"   
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
-    <!-- Width="800" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}"-->
+    <!-- Width="800" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
     <Window.Resources>
-        <TextBlock x:Key="serverStr" Text="开启SERVER"></TextBlock>
+        <TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>
+       
     </Window.Resources>
-    <Grid Margin="20">
+    
+    <Grid Margin="20" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="auto"/>
+            <!--<ColumnDefinition Width="auto"/>-->
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" >
             <StackPanel>
-                <TextBlock Text="协议类型——TCP SERVER"/>
+                <TextBlock Text="TCP SERVER" FontWeight="Bold"/>
                 <!--<Border Margin="0 5 0 0" Background="Transparent" CornerRadius="3" >
                     <ComboBox                
                     IsDropDownOpen="False"
@@ -35,9 +40,9 @@
                 <TextBlock Text="IP地址" Margin="0 5 0 0"/>
 
                 <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
-                    <TextBox                         
+                    <TextBox                    
                         x:Name="IpAddress"
-                        BorderThickness="0" Background="Transparent"                        
+                        BorderThickness="0" Background="White"                    
                         VerticalContentAlignment="Center"
                         VerticalAlignment="Center"
                          Height="25"  />
@@ -54,13 +59,11 @@
                         Background="Transparent"
                         VerticalContentAlignment="Center"
                         VerticalAlignment="Center"
-                         Height="25"
-                         />
+                         Height="25" />
                 </Border>
 
-
-
-                <Button 
+                <!--原 back-->
+                <!--<Button 
                     x:Name="linkButton"
                     Margin="0 40 0 0"  
                     Height="30"
@@ -73,14 +76,16 @@
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
-                </Button>
+                </Button>-->
 
-
-
-                <!--<Button Height="30" Margin="0 40 0 0"  x:Name="linkButton" BorderBrush="{x:Null}" BorderThickness="0" Content="开启SERVER" >
+                <!--之后改-->
+                <Button Height="30" Margin="0 40 0 0"  x:Name="linkButton" >
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Background" Value="#FBC12D"/>
+
+                            <EventSetter Event="Click"  Handler="One_Click"/>
+
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Button}">
@@ -88,18 +93,18 @@
                                         <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="2" Background="{TemplateBinding Background}" >
                                             <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                         </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="ClickMode"  Value="Hover">
-                                               
-                                                <Setter Property="Content" Value="关闭SERVER"/>
+                                        
+                                        <!--<ControlTemplate.Triggers>
+                                            <Trigger Property="Content" Value="关闭SERVER">
+                                                --><!--<Setter Property="Content" Value="关闭SERVER"/>--><!--
                                             </Trigger>
-                                        </ControlTemplate.Triggers>
+                                        </ControlTemplate.Triggers>-->
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </Button.Style>
-                </Button>-->
+                </Button>
 
 
 
@@ -110,35 +115,34 @@
 
         <!--现在方便看 以后删除-->
         <Grid Grid.Column="1" Margin="40 0 0 0">
-            <StackPanel>
-                <TextBlock Text="数据接收区"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height=" auto"/>
+                <RowDefinition Height=" *"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="数据收发区" Grid.Row="0"/>
 
-                <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
-                    <!--Width="150"-->
-                    <TextBox 
-                        x:Name="DataGet"                       
+            <Border Margin="0 5 0 30" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">
+                <!--Width="150"-->
+                <TextBox                    
+                        x:Name="DataShow"                       
                         BorderThickness="0" 
-                        Background="Transparent"
-                        
-                                              
-                        Height="50" />
-                </Border>
+                        Background="Transparent"  />
+            </Border>
 
-                <TextBlock 
-                    Text="数据发送区"
-                    Margin="0 40 0 0" />
+            <!--<TextBlock 
+                    Text="数据发送区(考虑删除)"
+                    Margin="0 40 0 0" />-->
 
-                <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
-                    <!--VerticalAlignment="Center"-->
+            <!--暂时注释-->
+            <!--<Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
                     <TextBox 
                         x:Name="DataSend"
                         BorderThickness="0" 
-                        Background="Transparent" 
-                               
+                        Background="Transparent"                              
                         Height="50" />
-                </Border>
+                </Border>-->
 
-                <!--<Button 
+            <!--<Button 
                     Margin="0 5 0 0"  
                     Height="30"
                     Click="Send_Data">
@@ -151,14 +155,22 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>-->
-            </StackPanel>
+
         </Grid>
 
         <Grid Grid.Column="2" Margin="40 0">
-            <StackPanel>
+            <!--<StackPanel />-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <!--<RowDefinition Height="auto"/>-->
+                </Grid.RowDefinitions>
                 <TextBlock Text="数据键值对定义"/>
 
-                <WrapPanel Margin="0 5 0 0" VerticalAlignment="Top">
+                <WrapPanel Margin="0 5 0 0" VerticalAlignment="Top" Grid.Row="1">
                     <TextBlock Text="键" />
                     <Border Margin="5 0 0 0" VerticalAlignment="Top" Width="50" CornerRadius="1" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
                         <TextBox                            
@@ -202,11 +214,10 @@
                             ItemsSource="{Binding DataDridKVs}"  >-->
 
 
-
-                    <DataGrid Margin="0 5 0 0" 
-                          Height="200"
-                            x:Name="KeyAndValue"
-                              
+                <!--Height="*200" Height="100"-->
+                <DataGrid Margin="0 5 0 0"                         
+                          Grid.Row="2"
+                            x:Name="KeyAndValue"                              
                               RowHeaderWidth="0"
                                                  
                             AutoGenerateColumns="False"
@@ -223,6 +234,17 @@
                             SelectedItem="{Binding SelectedItem}"
                             ItemsSource="{Binding DataDridKVs}"  >
                     <DataGrid.Columns>
+                        <!--<DataGridTextColumn
+                                    Width="40"    
+                                    Header="开启" 
+                            Binding="{Binding Use}"/>-->
+                        <!--<DataGridCheckBoxColumn                         
+                             Header="启用" 
+                            Binding="{Binding Use,Mode=TwoWay}"   />-->
+                        <!--<DataGridCheckBoxColumn                         
+                             Header="禁用" 
+                            Selector.IsSelected="{Binding UseKV}"
+                              />-->
                         <DataGridTextColumn
                                     Width="100"    
                                     Header="输入格式" 
@@ -235,7 +257,7 @@
                 </DataGrid>
 
 
-                <StackPanel Margin="0 5 0 0">
+                <StackPanel Margin="0 5 0 0" Grid.Row="3">
                     <WrapPanel >
                         <Button                   
                         Width="60"
@@ -295,9 +317,12 @@
                         </Button>
                     </WrapPanel>-->
                 </StackPanel>
-                
-               
-            </StackPanel>
+            </Grid>
+
+
+
+
+
         </Grid>
     </Grid>
 </Window>
