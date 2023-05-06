@@ -12,7 +12,6 @@
     <!-- Width="800" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
     <Window.Resources>
         <TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>
-       
     </Window.Resources>
     
     <Grid Margin="20" >
@@ -123,10 +122,25 @@
 
             <Border Margin="0 5 0 30" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">
                 <!--Width="150"-->
-                <TextBox                    
+                <!--<TextBox  
                         x:Name="DataShow"                       
                         BorderThickness="0" 
-                        Background="Transparent"  />
+                        Background="Transparent"  />-->
+                <RichTextBox x:Name="DataShow"  BorderThickness="0"  Background="Transparent"  >
+                    <FlowDocument Name="ParaText" >
+                        <!--<Paragraph  >
+                            <TextBox  x:Name="DataShow"  BorderThickness="0"   Background="Transparent" />
+                            <TextBox  x:Name="DataShow2"  BorderThickness="0"   Background="Transparent" />
+                        </Paragraph>-->
+                    </FlowDocument>
+                </RichTextBox>
+
+                <!--<StackPanel>
+                    <TextBox  x:Name="DataShow"  BorderThickness="0"   Background="Transparent" />
+                    <TextBox  x:Name="DataShow2"  BorderThickness="0"   Background="Transparent" />
+                </StackPanel>-->
+                
+       
             </Border>
 
             <!--<TextBlock 

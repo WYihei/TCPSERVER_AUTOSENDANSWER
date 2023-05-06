@@ -114,16 +114,12 @@ namespace tcp_auto
         //private bool Use = true;
         //MainModel mainM = new MainModel();
         //bool sss = mainM.Use;
+        
 
-
-        //接收到    client发送的数据    时间显示
-        string currentTime = DateTime.Now.ToString();
         //接收到    client发送的数据
         private void Events_DataReceived(object? sender, DataReceivedEventArgs e)
         {
             //check的true false
-
-
             var clientData = e.Data;
             var byteArray = clientData.ToArray();
             string getContent = System.Text.Encoding.Default.GetString(byteArray);
@@ -133,31 +129,63 @@ namespace tcp_auto
 
             Dispatcher.Invoke(() =>
             {
-
+                //接收到    client发送的数据    时间显示
+                string currentTime = DateTime.Now.ToString();
                 //var aa=DataDridKVs[SelectedIndex].Use;
 
                 //if (dictionary.ContainsKey(getContent)&& sss is true)
                 if (dictionary.ContainsKey(getContent))
                 {
-                    //SolidBrush sb = new SolidBrush(colorDialog.Color);
-                    //SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
-                    //DataShow.Foreground = solidColorBrush;//改变字体颜色
+                    ////SolidBrush sb = new SolidBrush(colorDialog.Color);
+                    ////SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
+                    ////DataShow.Foreground = solidColorBrush;//改变字体颜色
 
-                    //UI界面上显示                    
-                    DataShow.Text += currentTime+ "  " + clientIpPort+ "\r\n" + "SEND " + "\r\n"+getContent + "\r\n"+ "ACPT " + "\r\n"+dictionary[getContent];
-                    //server传送出
-                    string serverSend = dictionary[getContent];
-                    //server 发送数据   返回给client
-                    server.Send(clientIpPort, serverSend);
+                    ////UI界面上显示      
+                    ////back  DataShow.Text += currentTime+ "  " + clientIpPort+ "\r\n" + "ACPT " + "\r\n"+getContent + "\r\n"+ "SEND " + "\r\n"+dictionary[getContent] + "\r\n";
+                    //DataShow.Text += currentTime+ "  " + clientIpPort+ "\r\n" + "ACPT " + "\r\n"+getContent + "\r\n"+ "SEND " + "\r\n"+dictionary[getContent] + "\r\n";
+
+                    ////server传送出
+                    //string serverSend = dictionary[getContent];
+                    ////server 发送数据   返回给client
+                    //server.Send(clientIpPort, serverSend);
+
+
+
+
+
+
+
+                    FlowDocument mcFlowDoc = new FlowDocument();
+                    // Create a paragraph with text  
+                    Paragraph para = new Paragraph();
+                    //para.Inlines.Add(new Run(currentTime +"  " + clientIpPort + "\r\n"));                   
+                    //para.Inlines.Add(new Bold(new Run("ACPT" + "\r\n")));
+                    para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "ACPT" + "\r\n") { Foreground = Brushes.LightGray });
+                    para.Inlines.Add(new Run(getContent + "\r\n") { Foreground = Brushes.Blue });
+                    para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "SEND" + "\r\n") { Foreground = Brushes.LightGray });
+                    //para.Inlines.Add(new Bold(new Run("SEND" + "\r\n")));
+                    para.Inlines.Add(new Run(dictionary[getContent] + "\r\n") { Foreground = Brushes.Green });
+                    // Add the paragraph to blocks of paragraph  
+                    ParaText.Blocks.Add(para);
                 }
                 else
                 {
-                    DataShow.Text += currentTime + "  " + clientIpPort + "\r\n" + "SEND " + "\r\n" + getContent;
+                    //back     DataShow.DataContext += currentTime + "  " + clientIpPort + "\r\n" + "ACPT " + "\r\n" + getContent + "\r\n";                 
                     //var textGreen = new SolidColorBrush(Colors.Green);
                     //DataShow.Foreground = textGreen;//改变字体颜色 
 
                     //DataGet.Text = getContent + "  IpPort是:" + clientIpPort;
                     //DataSend.Text = "该键没有对应值";
+                    
+                    FlowDocument mcFlowDoc = new FlowDocument();
+                    // Create a paragraph with text  
+                    Paragraph para = new Paragraph();
+                    para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "ACPT" + "\r\n") { Foreground = Brushes.LightGray });
+                    //para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "\r\n") { Foreground = Brushes.Blue });
+                    //para.Inlines.Add(new Bold(new Run("ACPT" + "\r\n")));
+                    para.Inlines.Add(new Run(getContent + "\r\n") { Foreground = Brushes.Blue });    
+                    // Add the paragraph to blocks of paragraph  
+                    ParaText.Blocks.Add(para);
                     return;
                 }
             });
