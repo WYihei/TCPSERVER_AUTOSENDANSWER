@@ -5,21 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:tcp_auto"
         mc:Ignorable="d"
-        Title="TCP-ASSIST" 
-        Width="800"
+        
+        Width="900"
         Height="400"   
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
-    <!-- Width="800" SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
+    <!-- Width="800" Title="TCP SERVER"  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
     <Window.Resources>
         <TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>
+        <TextBlock x:Key="startKV" Text="应答"></TextBlock>
     </Window.Resources>
     
     <Grid Margin="20" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
-            <!--<ColumnDefinition Width="auto"/>-->
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <!--<ColumnDefinition Width="auto"/>-->
+
+
+
+
+
+
+
+
+
+
+
+            <!--<ColumnDefinition Width="150"/>       
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>-->
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" >
@@ -88,39 +107,40 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Button}">
-                                
+
                                         <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="2" Background="{TemplateBinding Background}" >
                                             <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+
                                         </Border>
-                                        
-                                        <!--<ControlTemplate.Triggers>
-                                            <Trigger Property="Content" Value="关闭SERVER">
-                                                --><!--<Setter Property="Content" Value="关闭SERVER"/>--><!--
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>-->
+
+
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
                     </Button.Style>
                 </Button>
-
-
-
-
-
             </StackPanel>
         </Grid>
 
+        <!--<Separator Grid.Column="1"  Background="LightGray" />-->
+        <Separator Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="20 0 0 0">
+            <Separator.LayoutTransform>
+                <RotateTransform Angle="90" />
+            </Separator.LayoutTransform>
+        </Separator>
+
+
         <!--现在方便看 以后删除-->
-        <Grid Grid.Column="1" Margin="40 0 0 0">
+        <Grid Grid.Column="2" Margin="20 0 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height=" auto"/>
                 <RowDefinition Height=" *"/>
+                <RowDefinition Height=" auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="数据收发区" Grid.Row="0"/>
+            <TextBlock Text="数据应答区" Grid.Row="0" FontWeight="Bold"/>
 
-            <Border Margin="0 5 0 30" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">
+            <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">
                 <!--Width="150"-->
                 <!--<TextBox  
                         x:Name="DataShow"                       
@@ -134,14 +154,23 @@
                         </Paragraph>-->
                     </FlowDocument>
                 </RichTextBox>
-
-                <!--<StackPanel>
-                    <TextBox  x:Name="DataShow"  BorderThickness="0"   Background="Transparent" />
-                    <TextBox  x:Name="DataShow2"  BorderThickness="0"   Background="Transparent" />
-                </StackPanel>-->
-                
-       
             </Border>
+            
+            <Button  Grid.Row="3"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
+                        Width="100"
+                        Height="25"
+                     Click="StartKeyValue"
+                     x:Name="askAnswerButton">
+                <Button.Template >
+                    <ControlTemplate  >
+                        <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
+                            <Border.Background>#FBC12D</Border.Background>
+                            <!--<ContentPresenter Content="启动应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>-->
+                            <ContentPresenter Content="{DynamicResource startKV}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
 
             <!--<TextBlock 
                     Text="数据发送区(考虑删除)"
@@ -172,7 +201,7 @@
 
         </Grid>
 
-        <Grid Grid.Column="2" Margin="40 0">
+        <Grid Grid.Column="3" Margin="20 0 0 0">
             <!--<StackPanel />-->
             <Grid>
                 <Grid.RowDefinitions>
@@ -182,31 +211,37 @@
                     <RowDefinition Height="auto"/>
                     <!--<RowDefinition Height="auto"/>-->
                 </Grid.RowDefinitions>
-                <TextBlock Text="数据键值对定义"/>
-
-                <WrapPanel Margin="0 5 0 0" VerticalAlignment="Top" Grid.Row="1">
-                    <TextBlock Text="键" />
-                    <Border Margin="5 0 0 0" VerticalAlignment="Top" Width="50" CornerRadius="1" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
-                        <TextBox                            
+                <TextBlock Text="应答键值"/>
+                <StackPanel Margin="0 5 0 0" VerticalAlignment="Top" Grid.Row="1">
+                    <WrapPanel>
+                        <TextBlock Text="键" VerticalAlignment="Center"/>
+                        <!--<Border Margin="0 5 0 30" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">-->
+                        <Border Margin="5 0 0 0" VerticalAlignment="Top" MinWidth="200" HorizontalAlignment="Stretch" CornerRadius="3" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
+                            <TextBox                            
                             x:Name="Key"
                             BorderThickness="0" 
                             Background="Transparent"                        
                             VerticalContentAlignment="Center"
                             VerticalAlignment="Center"  
                             Text="{Binding KeyMess}"/>
-                    </Border>
+                        </Border>
+                    </WrapPanel>
 
-                    <TextBlock Text="值" Margin="5 0 0 0"/>
-                    <Border Margin="5 0 0 0" VerticalAlignment="Top" Width="50" CornerRadius="1" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
-                        <TextBox                         
+                    <WrapPanel Margin="0 5 0 0">
+                        <TextBlock Text="值"  VerticalAlignment="Center"/>
+                        <Border Margin="5 0 0 0" VerticalAlignment="Top" MinWidth="200" HorizontalAlignment="Stretch" CornerRadius="3" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
+                            <TextBox                         
                             x:Name="Value"
                             BorderThickness="0" 
                             Background="Transparent"                        
                             VerticalContentAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding ValueMess}"/>
-                    </Border>
-                </WrapPanel>
+                        </Border>
+                    </WrapPanel>
+
+
+                </StackPanel>
 
 
                 <!--<DataGrid Margin="0 5 0 0" 
@@ -233,7 +268,8 @@
                           Grid.Row="2"
                             x:Name="KeyAndValue"                              
                               RowHeaderWidth="0"
-                                                 
+                                    
+                         
                             AutoGenerateColumns="False"
                             Background="White"
                             BorderThickness="0"
@@ -260,12 +296,12 @@
                             Selector.IsSelected="{Binding UseKV}"
                               />-->
                         <DataGridTextColumn
-                                    Width="100"    
-                                    Header="输入格式" 
+                                    MinWidth="120"    
+                                    Header="键" 
                             Binding="{Binding DataKey}"/>
                         <DataGridTextColumn
-                                    Width="100"                                   
-                                    Header="匹配格式" 
+                                    MinWidth="120"                                
+                                    Header="值" 
                             Binding="{Binding DataValue}"/>
                     </DataGrid.Columns>
                 </DataGrid>
@@ -281,7 +317,7 @@
                                 <ControlTemplate  >
                                     <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="增匹配" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                        <ContentPresenter Content="增键值" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                     </Border>
                                 </ControlTemplate>
                             </Button.Template>
@@ -295,7 +331,7 @@
                                 <ControlTemplate  >
                                     <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="删匹配" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                        <ContentPresenter Content="删键值" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                     </Border>
                                 </ControlTemplate>
                             </Button.Template>
@@ -332,11 +368,43 @@
                     </WrapPanel>-->
                 </StackPanel>
             </Grid>
-
-
-
-
-
         </Grid>
+        
+        <Separator Grid.Column="4" BorderBrush="LightGray" BorderThickness="1" Margin="20 0 0 0">
+            <Separator.LayoutTransform>
+                <RotateTransform Angle="90" />
+            </Separator.LayoutTransform>
+        </Separator>
+    
+        <Grid Grid.Column="5" Margin="20 0 10 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="数据发送区" FontWeight="Bold"/>
+
+            <Border Grid.Row="1" MinWidth="100"  Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
+                <TextBox  
+                    x:Name="SendData"
+                        BorderThickness="0" 
+                    Background="White" />
+            </Border>
+
+            <Button  Grid.Row="2"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
+                        Width="100"
+                        Height="25"
+                     Click="SendDataCommand">
+                <Button.Template >
+                    <ControlTemplate  >
+                        <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
+                            <Border.Background>#FBC12D</Border.Background>
+                            <ContentPresenter Content="发送数据" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+
     </Grid>
 </Window>

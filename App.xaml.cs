@@ -13,5 +13,16 @@ namespace tcp_auto
     /// </summary>
     public partial class App : Application
     {
+        //以后可能    注
+        public App()
+        {
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("Error encountered and U could ask for support" + Environment.NewLine + e.Exception.Message);
+            e.Handled = true;
+        }
     }
 }

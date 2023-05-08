@@ -33,7 +33,10 @@ namespace tcp_auto
             Messenger.Default.Register<Tuple<string, string>>(this, "SendMess", GetSendMess);
             Messenger.Default.Register<MainModel>(this, "RemoveMess", GetRemoveMess);
             readIpPort();
+            //initialLink();
         }
+
+        
 
         public void readIpPort()
         {
@@ -58,40 +61,41 @@ namespace tcp_auto
                 }
             }
         }
-
+        string clientIpPort;
+        string tryIp;
         SimpleTcpServer server;
         //连接web
         private void LinkCommand(object sender, RoutedEventArgs e)
         {
-            this.Resources["serverStr"] = new TextBlock() { Text = "关闭SERVER" };
-            //一打开 就开启server
-            //测试的时候先写死   之后变成灵活输入端    192.168.10.23:8080 ip4
-            //string serverAddress = "10.198.75.60:8080";
-            //string serverAddress = "192.168.10.23:8080";
-            string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
-            server = new SimpleTcpServer(serverAddress);
-            server.Start();
-            //bool flag = true;
-            //if (flag)
+            //this.Resources["serverStr"] = new TextBlock() { Text = "关闭SERVER" };
+            ////一打开 就开启server
+            ////测试的时候先写死   之后变成灵活输入端    192.168.10.23:8080 ip4
+            ////string serverAddress = "10.198.75.60:8080";
+            ////string serverAddress = "192.168.10.23:8080";
+            //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+            //server = new SimpleTcpServer(serverAddress);
+            //server.Start();
+            ////bool flag = true;
+            ////if (flag)
+            ////{
+            ////    this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
+            ////}
+            //MessageBox.Show("已连接client，client可以发送消息");
+            ////client发送的数据    server数据接收区得到      server数据发送区发送
+            //server.Events.DataReceived += Events_DataReceived;
+
+            //string[] defLines = File.ReadAllLines(@"Data.txt");
+            //for (int i = 0; i < defLines.Length; i++)
             //{
-            //    this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
+            //    //split
+            //    string item = defLines[i];
+            //    string[] values = item.Split(',');
+            //    dictionary.Add(values[0], values[1]);
             //}
-            MessageBox.Show("已连接client，client可以发送消息");
-            //client发送的数据    server数据接收区得到      server数据发送区发送
-            server.Events.DataReceived += Events_DataReceived;
 
-            string[] defLines = File.ReadAllLines(@"Data.txt");
-            for (int i = 0; i < defLines.Length; i++)
-            {
-                //split
-                string item = defLines[i];
-                string[] values = item.Split(',');
-                dictionary.Add(values[0], values[1]);
-            }
-
-            //存储     path和       content的全部数据
-            string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
-            System.IO.File.WriteAllText(@"IpPort.txt", line);
+            ////存储     path和       content的全部数据
+            //string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+            //System.IO.File.WriteAllText(@"IpPort.txt", line);
         }
 
         //private void AgainCommand(object sender, RoutedEventArgs e)
@@ -109,13 +113,77 @@ namespace tcp_auto
         //    MessageBox.Show("已关闭Server");
         //}
 
-        
 
-        //private bool Use = true;
-        //MainModel mainM = new MainModel();
-        //bool sss = mainM.Use;
-        
 
+        bool firstClicksssssssssssss = true;
+        private void One_Clickssssssssss(object sender, RoutedEventArgs e)
+        {
+            if (firstClicksssssssssssss)
+            {
+                //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+                this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+                string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+                server = new SimpleTcpServer(serverAddress);
+                server.Start();
+                MessageBox.Show("已连接client，client可以发送消息");
+                //client发送的数据    server数据接收区得到      server数据发送区发送   event
+                server.Events.DataReceived += Events_DataReceived;
+
+                string[] defLines = File.ReadAllLines(@"Data.txt");
+                for (int i = 0; i < defLines.Length; i++)
+                {
+                    //split
+                    string item = defLines[i];
+                    string[] values = item.Split(',');
+                    dictionary.Add(values[0], values[1]);
+                }
+
+                //存储     path和       content的全部数据
+                string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+                System.IO.File.WriteAllText(@"IpPort.txt", line);
+
+                firstClicksssssssssssss = false;
+            }
+            else
+            {
+                this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
+
+                this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
+                server.Dispose();
+                MessageBox.Show("已关闭Server");
+                return;
+            }
+        }
+
+        bool firstClickKV = true;
+        //启动自动应答
+        bool _startKeyValue = false;
+        private void StartKeyValue(object sender, RoutedEventArgs e)
+        {
+            if (firstClickKV)
+            {
+                this.askAnswerButton.Background = new SolidColorBrush(Colors.Yellow);
+                this.Resources["startKV"] = new TextBlock() { Text = "开启应答" };
+                _startKeyValue = true;
+                //MessageBox.Show("已开启应答");
+                firstClickKV=false;
+            }
+            else
+            {
+                this.askAnswerButton.Background = new SolidColorBrush(Colors.LightGray);
+                this.Resources["startKV"] = new TextBlock() { Text = "关闭应答" };
+                _startKeyValue = false;
+                firstClickKV=true;
+            }
+            
+        }
+
+        //bool _startKeyValue = false;
+        //private void StartKeyValue(object sender, RoutedEventArgs e)
+        //{
+        //    _startKeyValue = true;
+        //    MessageBox.Show("已启动键值");
+        //}
         //接收到    client发送的数据
         private void Events_DataReceived(object? sender, DataReceivedEventArgs e)
         {
@@ -126,34 +194,28 @@ namespace tcp_auto
 
             //e  client的IpPort
             var clientIpPort = e.IpPort.ToString();
-
+            string tryIp = clientIpPort;
             Dispatcher.Invoke(() =>
             {
                 //接收到    client发送的数据    时间显示
                 string currentTime = DateTime.Now.ToString();
                 //var aa=DataDridKVs[SelectedIndex].Use;
 
-                //if (dictionary.ContainsKey(getContent)&& sss is true)
-                if (dictionary.ContainsKey(getContent))
+                if (dictionary.ContainsKey(getContent)&& _startKeyValue is true)
+                //if (dictionary.ContainsKey(getContent))
                 {
-                    ////SolidBrush sb = new SolidBrush(colorDialog.Color);
-                    ////SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
-                    ////DataShow.Foreground = solidColorBrush;//改变字体颜色
+                    //SolidBrush sb = new SolidBrush(colorDialog.Color);
+                    //SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(sb.Color.A, sb.Color.R, sb.Color.G, sb.Color.B));
+                    //DataShow.Foreground = solidColorBrush;//改变字体颜色
 
                     ////UI界面上显示      
                     ////back  DataShow.Text += currentTime+ "  " + clientIpPort+ "\r\n" + "ACPT " + "\r\n"+getContent + "\r\n"+ "SEND " + "\r\n"+dictionary[getContent] + "\r\n";
-                    //DataShow.Text += currentTime+ "  " + clientIpPort+ "\r\n" + "ACPT " + "\r\n"+getContent + "\r\n"+ "SEND " + "\r\n"+dictionary[getContent] + "\r\n";
+                    //DataShow.Text += currentTime + "  " + clientIpPort + "\r\n" + "ACPT " + "\r\n" + getContent + "\r\n" + "SEND " + "\r\n" + dictionary[getContent] + "\r\n";
 
                     ////server传送出
-                    //string serverSend = dictionary[getContent];
-                    ////server 发送数据   返回给client
-                    //server.Send(clientIpPort, serverSend);
-
-
-
-
-
-
+                    ////string serverSend = dictionary[getContent];
+                    //////server 发送数据   返回给client
+                    ////server.Send(clientIpPort, serverSend);
 
                     FlowDocument mcFlowDoc = new FlowDocument();
                     // Create a paragraph with text  
@@ -164,9 +226,12 @@ namespace tcp_auto
                     para.Inlines.Add(new Run(getContent + "\r\n") { Foreground = Brushes.Blue });
                     para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "SEND" + "\r\n") { Foreground = Brushes.LightGray });
                     //para.Inlines.Add(new Bold(new Run("SEND" + "\r\n")));
-                    para.Inlines.Add(new Run(dictionary[getContent] + "\r\n") { Foreground = Brushes.Green });
+                    para.Inlines.Add(new Run(dictionary[getContent]) { Foreground = Brushes.Green });
                     // Add the paragraph to blocks of paragraph  
                     ParaText.Blocks.Add(para);
+                    //server 发送数据   返回给client（不要忘记发送）
+                    string serverSend = dictionary[getContent];
+                    server.Send(clientIpPort, serverSend);
                 }
                 else
                 {
@@ -183,7 +248,7 @@ namespace tcp_auto
                     para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "ACPT" + "\r\n") { Foreground = Brushes.LightGray });
                     //para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "\r\n") { Foreground = Brushes.Blue });
                     //para.Inlines.Add(new Bold(new Run("ACPT" + "\r\n")));
-                    para.Inlines.Add(new Run(getContent + "\r\n") { Foreground = Brushes.Blue });    
+                    para.Inlines.Add(new Run(getContent ) { Foreground = Brushes.Blue });    
                     // Add the paragraph to blocks of paragraph  
                     ParaText.Blocks.Add(para);
                     return;
@@ -316,20 +381,120 @@ namespace tcp_auto
             //MessageBox.Show("导出数据");
         }
 
+        //string serverAddress;
+        //private void initialLink()
+        //{
+        //    string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+        //    server = new SimpleTcpServer(serverAddress);
+        //    server.Start();
+        //}
 
 
+
+        //暂时停
+        //bool firstClick = true;
+        //private void One_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+        //    if (firstClick)
+        //    {
+        //        //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+        //        this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+        //        //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+        //        //server = new SimpleTcpServer(serverAddress);
+        //        var whetherConnet = server.IsConnected(serverAddress);
+        //        //var s=server.IsConnected;
+        //        //var whetherConnet = server.IsListening;
+
+        //        if (whetherConnet)
+        //        {
+
+        //            server = new SimpleTcpServer(serverAddress);
+        //            server.Start();
+        //            MessageBox.Show("已连接client，client可以发送消息");
+        //            //client发送的数据    server数据接收区得到      server数据发送区发送
+        //            server.Events.DataReceived += Events_DataReceived;
+
+        //            string[] defLines = File.ReadAllLines(@"Data.txt");
+        //            for (int i = 0; i < defLines.Length; i++)
+        //            {
+        //                //split
+        //                string item = defLines[i];
+        //                string[] values = item.Split(',');
+        //                dictionary.Add(values[0], values[1]);
+        //            }
+
+        //            //存储     path和       content的全部数据
+        //            string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+        //            System.IO.File.WriteAllText(@"IpPort.txt", line);
+        //            firstClick = false;
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("已连接client，client可以发送消息");
+
+        //            //client发送的数据    server数据接收区得到      server数据发送区发送
+        //            server.Events.DataReceived += Events_DataReceived;
+
+        //            string[] defLines = File.ReadAllLines(@"Data.txt");
+        //            for (int i = 0; i < defLines.Length; i++)
+        //            {
+        //                //split
+        //                string item = defLines[i];
+        //                string[] values = item.Split(',');
+        //                dictionary.Add(values[0], values[1]);
+        //            }
+
+        //            //存储     path和       content的全部数据
+        //            string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+        //            System.IO.File.WriteAllText(@"IpPort.txt", line);
+        //            firstClick = false;
+        //        }             
+        //    }
+        //    else
+        //    {
+        //        this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
+        //        //Dispatcher.Invoke(() =>
+        //        //{
+        //        //    server.Dispose();
+        //        //    //server.Stop();
+        //        //});
+        //        //server.DisconnectClient(serverAddress);
+        //        server.Dispose();
+
+        //        //var s=server.Connections;
+        //        //server.Stop();
+        //        this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
+
+        //        MessageBox.Show("已关闭Server");
+        //        firstClick = true;
+        //        return;
+        //    }
+        //}
+
+
+
+
+
+
+        /// <summary>
+        /// back button连接和断开的event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         bool firstClick = true;
         private void One_Click(object sender, RoutedEventArgs e)
         {
             if (firstClick)
             {
+                //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
                 this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
                 string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
                 server = new SimpleTcpServer(serverAddress);
                 server.Start();
 
                 MessageBox.Show("已连接client，client可以发送消息");
-                //client发送的数据    server数据接收区得到      server数据发送区发送
+                //client发送的数据    server数据接收区得到      server数据发送区发送   event
                 server.Events.DataReceived += Events_DataReceived;
 
                 string[] defLines = File.ReadAllLines(@"Data.txt");
@@ -346,7 +511,7 @@ namespace tcp_auto
                 System.IO.File.WriteAllText(@"IpPort.txt", line);
 
                 firstClick = false;
-       
+
             }
             else
             {
@@ -355,12 +520,30 @@ namespace tcp_auto
                 //{
                 //    server.Stop();
                 //});
-          
                 this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
-       
+                server.Dispose();
                 MessageBox.Show("已关闭Server");
                 return;
             }
         }
+
+     
+
+        private void SendDataCommand(object sender, RoutedEventArgs e)
+        {
+            //要发送的内容     一个一个发
+            var SendDataContent = this.SendData.Text;
+            //获取client的IpPort   再发送
+            var allClients = server.GetClients();
+            List<string> clientsList = allClients.ToList();
+            var first= clientsList[0];
+
+            server.Send(first, SendDataContent);
+
+            //接收到    client发送的数据    时间显示
+            //string currentTime = DateTime.Now.ToString();
+        }
+
+        
     }
 }
