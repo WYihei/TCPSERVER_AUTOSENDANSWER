@@ -89,6 +89,10 @@ namespace tcp_auto
             }
         }
 
+      
+       
+
+
 
 
 
@@ -159,7 +163,87 @@ namespace tcp_auto
             }
         }
 
-        
+
+        public ICommand UpTaskCommand
+        {
+            get
+            {
+                return new RelayCommand<object>((obj) =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (SelectedIndex == -1)
+                        {
+                            MessageBox.Show("请先选择需要操作的任务");
+                            return;
+                        }
+                        else if (SelectedIndex <= 0)
+                        {
+                            MessageBox.Show("当前任务已经是第一个任务");
+                            return;
+                        }
+
+                        DataDridKVs.Move(SelectedIndex, SelectedIndex - 1);
+                    });
+                });
+            }
+        }
+
+        //private void UpTask()
+        //{
+        //    if (SelectedIndex == -1)
+        //    {
+        //        MessageBox.Show("请先选择需要操作的任务");
+        //        return;
+        //    }
+        //    else if (SelectedIndex <= 0)
+        //    {
+        //        MessageBox.Show("当前任务已经是第一个任务");
+        //        return;
+        //    }
+        //    DataDridKVs.Move(SelectedIndex, SelectedIndex - 1);
+        //    //获取当前选中行的索引   如果该行不是第一行 移
+        //}
+
+        public ICommand DownTaskCommand
+        {
+            get
+            {
+                return new RelayCommand<object>((obj) =>
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        var lastIndex = DataDridKVs.Count;
+                        if (SelectedIndex == -1)
+                        {
+                            MessageBox.Show("请先选择需要操作的任务");
+                            return;
+                        }
+                        else if (SelectedIndex == lastIndex - 1)
+                        {
+                            MessageBox.Show("当前任务已经是最后一个任务");
+                            return;
+                        }
+                        DataDridKVs.Move(SelectedIndex, SelectedIndex + 1);
+                    });
+                });
+            }
+        }
+        //private void DownTask()
+        //{
+        //    var lastIndex = DataDridKVs.Count;
+        //    if (SelectedIndex == -1)
+        //    {
+        //        MessageBox.Show("请先选择需要操作的任务");
+        //        return;
+        //    }
+        //    else if (SelectedIndex == lastIndex - 1)
+        //    {
+        //        MessageBox.Show("当前任务已经是最后一个任务");
+        //        return;
+        //    }
+        //    DataDridKVs.Move(SelectedIndex, SelectedIndex + 1);
+        //}
 
         /// <summary>
         /// 增加键值对

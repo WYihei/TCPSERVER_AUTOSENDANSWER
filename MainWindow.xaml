@@ -12,7 +12,7 @@
     <!-- Width="800" Title="TCP SERVER"  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
     <Window.Resources>
         <TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>
-        <TextBlock x:Key="startKV" Text="应答"></TextBlock>
+        <TextBlock x:Key="startKV" Text="请开启应答"></TextBlock>
     </Window.Resources>
     
     <Grid Margin="20" >
@@ -100,9 +100,8 @@
                 <Button Height="30" Margin="0 40 0 0"  x:Name="linkButton" >
                     <Button.Style>
                         <Style TargetType="Button">
-                            <Setter Property="Background" Value="#FBC12D"/>
-
                             <EventSetter Event="Click"  Handler="One_Click"/>
+                            <Setter Property="Background" Value="#FBC12D"/>
 
                             <Setter Property="Template">
                                 <Setter.Value>
@@ -268,8 +267,7 @@
                           Grid.Row="2"
                             x:Name="KeyAndValue"                              
                               RowHeaderWidth="0"
-                                    
-                         
+
                             AutoGenerateColumns="False"
                             Background="White"
                             BorderThickness="0"
@@ -310,6 +308,34 @@
                 <StackPanel Margin="0 5 0 0" Grid.Row="3">
                     <WrapPanel >
                         <Button                   
+                        Width="20"
+                        Height="20"
+                            ToolTip="新增应答键值对"
+                            ToolTipService.InitialShowDelay="1" 
+                            ToolTipService.ShowDuration="2000" 
+                            ToolTipService.BetweenShowDelay="10000"                          
+                            Command="{Binding AddCommand}">
+                            
+                     
+
+                            <Button.Template >
+                                <ControlTemplate  >
+                                    <Border  BorderThickness="0" CornerRadius="2">
+                                        <WrapPanel>
+                                            <Image Source="D:\tcp_auto\tcp_auto\Image\addB.png"  Stretch="Uniform"/>
+                                            <!--<ContentPresenter Content="hh" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>-->
+                                        </WrapPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Opacity" Value="0.2" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                                
+                            </Button.Template>
+                        </Button>
+                        <!--<Button                   
                         Width="60"
                         Height="25"
                         Command="{Binding AddCommand}">
@@ -317,22 +343,86 @@
                                 <ControlTemplate  >
                                     <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="增键值" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                        <ContentPresenter Content="增应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                     </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>-->
+
+                        <Button  Margin="20 0 0 0" 
+                        Width="20"                     
+                        Height="20"
+                                 ToolTip="删除应答键值对"
+                            ToolTipService.InitialShowDelay="1" 
+                            ToolTipService.ShowDuration="2000" 
+                            ToolTipService.BetweenShowDelay="10000"   
+                        Command="{Binding DeleteCommand}">
+                            <Button.Template>
+                                <ControlTemplate  >
+                                    <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
+                                        <Border.Background>#FBC12D</Border.Background>
+                                        <ContentPresenter Content="删应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                    </Border>-->
+
+                                    <Border  BorderThickness="0" CornerRadius="2">
+                                        <Image Source="D:\tcp_auto\tcp_auto\Image\deleteB.png"  Stretch="Uniform"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Opacity" Value="0.2" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
 
                         <Button  Margin="20 0 0 0" 
-                        Width="60"                     
-                        Height="25"
-                        Command="{Binding DeleteCommand}">
+                        Width="20"                     
+                        Height="20"
+                        ToolTip="上移应答键值对"
+                            ToolTipService.InitialShowDelay="1" 
+                            ToolTipService.ShowDuration="2000" 
+                            ToolTipService.BetweenShowDelay="10000"   
+                                 Command="{Binding UpTaskCommand}">
                             <Button.Template>
                                 <ControlTemplate  >
-                                    <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
+                                    <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="删键值" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                        <ContentPresenter Content="上移" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                    </Border>-->
+                                    <Border  BorderThickness="0" CornerRadius="2">
+                                        <Image Source="D:\tcp_auto\tcp_auto\Image\UpB.png"  Stretch="Uniform"/>
                                     </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Opacity" Value="0.2" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        <Button  Margin="20 0 0 0" 
+                        Width="20"                     
+                        Height="20"
+                                  ToolTip="下移应答键值对"
+                            ToolTipService.InitialShowDelay="1" 
+                            ToolTipService.ShowDuration="2000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                        Command="{Binding DownTaskCommand}">
+                            <Button.Template>
+                                <ControlTemplate  >
+                                    <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
+                                        <Border.Background>#FBC12D</Border.Background>
+                                        <ContentPresenter Content="下移" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                    </Border>-->
+                                    <Border  BorderThickness="0" CornerRadius="2">
+                                        <Image Source="D:\tcp_auto\tcp_auto\Image\downB.png"  Stretch="Uniform"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Opacity" Value="0.2" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>
@@ -393,7 +483,7 @@
 
             <Button  Grid.Row="2"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
                         Width="100"
-                        Height="25"
+                        Height="25"        
                      Click="SendDataCommand">
                 <Button.Template >
                     <ControlTemplate  >

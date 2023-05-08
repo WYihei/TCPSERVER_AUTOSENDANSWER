@@ -22,6 +22,7 @@ namespace tcp_auto
         void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show("Error encountered and U could ask for support" + Environment.NewLine + e.Exception.Message);
+            //MessageBox.Show("Error encountered and U could ask for support"+"\r\n"+ "可重启再次开启server" + Environment.NewLine + e.Exception.Message);
             e.Handled = true;
         }
     }

@@ -390,93 +390,6 @@ namespace tcp_auto
         //}
 
 
-
-        //暂时停
-        //bool firstClick = true;
-        //private void One_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
-        //    if (firstClick)
-        //    {
-        //        //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
-        //        this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
-        //        //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
-        //        //server = new SimpleTcpServer(serverAddress);
-        //        var whetherConnet = server.IsConnected(serverAddress);
-        //        //var s=server.IsConnected;
-        //        //var whetherConnet = server.IsListening;
-
-        //        if (whetherConnet)
-        //        {
-
-        //            server = new SimpleTcpServer(serverAddress);
-        //            server.Start();
-        //            MessageBox.Show("已连接client，client可以发送消息");
-        //            //client发送的数据    server数据接收区得到      server数据发送区发送
-        //            server.Events.DataReceived += Events_DataReceived;
-
-        //            string[] defLines = File.ReadAllLines(@"Data.txt");
-        //            for (int i = 0; i < defLines.Length; i++)
-        //            {
-        //                //split
-        //                string item = defLines[i];
-        //                string[] values = item.Split(',');
-        //                dictionary.Add(values[0], values[1]);
-        //            }
-
-        //            //存储     path和       content的全部数据
-        //            string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
-        //            System.IO.File.WriteAllText(@"IpPort.txt", line);
-        //            firstClick = false;
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("已连接client，client可以发送消息");
-
-        //            //client发送的数据    server数据接收区得到      server数据发送区发送
-        //            server.Events.DataReceived += Events_DataReceived;
-
-        //            string[] defLines = File.ReadAllLines(@"Data.txt");
-        //            for (int i = 0; i < defLines.Length; i++)
-        //            {
-        //                //split
-        //                string item = defLines[i];
-        //                string[] values = item.Split(',');
-        //                dictionary.Add(values[0], values[1]);
-        //            }
-
-        //            //存储     path和       content的全部数据
-        //            string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
-        //            System.IO.File.WriteAllText(@"IpPort.txt", line);
-        //            firstClick = false;
-        //        }             
-        //    }
-        //    else
-        //    {
-        //        this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
-        //        //Dispatcher.Invoke(() =>
-        //        //{
-        //        //    server.Dispose();
-        //        //    //server.Stop();
-        //        //});
-        //        //server.DisconnectClient(serverAddress);
-        //        server.Dispose();
-
-        //        //var s=server.Connections;
-        //        //server.Stop();
-        //        this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
-
-        //        MessageBox.Show("已关闭Server");
-        //        firstClick = true;
-        //        return;
-        //    }
-        //}
-
-
-
-
-
-
         /// <summary>
         /// back button连接和断开的event
         /// </summary>
@@ -522,21 +435,26 @@ namespace tcp_auto
                 //});
                 this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
                 server.Dispose();
-                MessageBox.Show("已关闭Server");
+                MessageBox.Show("已关闭Server" + "\r\n" + "可重启软件再次开启server");
+         
                 return;
             }
         }
 
-     
+
 
         private void SendDataCommand(object sender, RoutedEventArgs e)
         {
+            if (server==null)
+            {
+                return;
+            }
             //要发送的内容     一个一个发
             var SendDataContent = this.SendData.Text;
             //获取client的IpPort   再发送
             var allClients = server.GetClients();
             List<string> clientsList = allClients.ToList();
-            var first= clientsList[0];
+            var first = clientsList[0];
 
             server.Send(first, SendDataContent);
 
@@ -544,6 +462,6 @@ namespace tcp_auto
             //string currentTime = DateTime.Now.ToString();
         }
 
-        
+  
     }
 }
