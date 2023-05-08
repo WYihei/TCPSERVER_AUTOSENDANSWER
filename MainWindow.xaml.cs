@@ -238,7 +238,6 @@ namespace tcp_auto
                     //back     DataShow.DataContext += currentTime + "  " + clientIpPort + "\r\n" + "ACPT " + "\r\n" + getContent + "\r\n";                 
                     //var textGreen = new SolidColorBrush(Colors.Green);
                     //DataShow.Foreground = textGreen;//改变字体颜色 
-
                     //DataGet.Text = getContent + "  IpPort是:" + clientIpPort;
                     //DataSend.Text = "该键没有对应值";
                     
