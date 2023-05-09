@@ -104,6 +104,10 @@ namespace tcp_auto
             {
                 ComboIpAdd = "127.0.0.1"
             });
+            ComboIps.Add(new ComboIp()
+            {
+                ComboIpAdd = "0.0.0.0"
+            });
             //存储 初始化打开界面不用选   再存储一个 放入集合中
             List<string> ipComboInitial = new List<string>();
             ipComboInitial.Add(_ipaddress);
