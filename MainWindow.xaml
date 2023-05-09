@@ -58,6 +58,29 @@
                     </ComboBox>
                 </Border>-->
 
+                    <!--之后改-->
+                    <!--<Button Height="25" Margin="0 5 0 0"  x:Name="linkButton" >
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <EventSetter Event="Click"  Handler="One_Click"/>
+                                <Setter Property="Background" Value="#FBC12D"/>
+
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+
+                                            <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="6" Background="{TemplateBinding Background}" >
+                                                <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+
+                                            </Border>
+
+
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>-->
 
                     <TextBlock Text="Ip Address" Margin="0 5 0 0"/>
 
@@ -110,6 +133,21 @@
                          Height="25" />
                     </Border>
 
+                    <Button  Grid.Row="3"     Margin="0 40 0 0"  
+                       
+                        Height="30"
+                     Click="StartKeyValue"
+                     x:Name="askAnswerButton">
+                        <Button.Template >
+                            <ControlTemplate  >
+                                <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="6">
+                                    <Border.Background>#FBC12D</Border.Background>
+                                    <ContentPresenter Content="{DynamicResource startKV}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
                     <!--原 back-->
                     <!--<Button 
                     x:Name="linkButton"
@@ -126,29 +164,7 @@
                     </Button.Template>
                 </Button>-->
 
-                    <!--之后改-->
-                    <Button Height="30" Margin="0 40 0 0"  x:Name="linkButton" >
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <EventSetter Event="Click"  Handler="One_Click"/>
-                                <Setter Property="Background" Value="#FBC12D"/>
-
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-
-                                            <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="6" Background="{TemplateBinding Background}" >
-                                                <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-
-                                            </Border>
-
-
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    
                 </StackPanel>
             </Border>
         </Grid>
@@ -195,7 +211,7 @@
                         </RichTextBox>
                     </Border>
 
-                    <Button  Grid.Row="3"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
+                    <!--<Button  Grid.Row="3"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
                         Width="100"
                         Height="25"
                      Click="StartKeyValue"
@@ -204,12 +220,11 @@
                             <ControlTemplate  >
                                 <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="6">
                                     <Border.Background>#FBC12D</Border.Background>
-                                    <!--<ContentPresenter Content="启动应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>-->
                                     <ContentPresenter Content="{DynamicResource startKV}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                 </Border>
                             </ControlTemplate>
                         </Button.Template>
-                    </Button>
+                    </Button>-->
 
                     <!--<TextBlock 
                     Text="数据发送区(考虑删除)"

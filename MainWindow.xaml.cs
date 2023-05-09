@@ -28,12 +28,14 @@ namespace tcp_auto
         public MainWindow()
         {
             InitializeComponent();
+            
             this.DataContext = new MainWindowViewModel();
             //数据收 发
             Messenger.Default.Register<Tuple<string, string>>(this, "SendMess", GetSendMess);
             Messenger.Default.Register<MainModel>(this, "RemoveMess", GetRemoveMess);
             readPort();
             readIp();
+            initialSoftware();
             //initialLink();
         }
 
@@ -431,7 +433,7 @@ namespace tcp_auto
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        bool firstClick = true;
+
         //private void One_Click(object sender, RoutedEventArgs e)
         //{
         //    if (firstClick)
@@ -498,65 +500,94 @@ namespace tcp_auto
         //    }
         //}
 
-
+        bool firstClick = true;
         //back
-        private void One_Click(object sender, RoutedEventArgs e)
-        {
-            if (firstClick)
+        //private void One_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (firstClick)
+        //    {
+        //        //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+        //        //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+        //        this.Resources["serverStr"] = new TextBlock() { Text = "已初始化" };
+        //        //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
+        //        string serverAddress = this.IpCombo.Text.ToString() + ":" + this.PortNum.Text.ToString();
+        //        server = new SimpleTcpServer(serverAddress);
+        //        server.Start();
+
+        //        //MessageBox.Show("已连接client，client可以发送消息");
+        //        //client发送的数据    server数据接收区得到      server数据发送区发送   event
+        //        server.Events.DataReceived += Events_DataReceived;
+
+        //        string[] defLines = File.ReadAllLines(@"Data.txt");
+        //        for (int i = 0; i < defLines.Length; i++)
+        //        {
+        //            //split
+        //            string item = defLines[i];
+        //            string[] values = item.Split(',');
+        //            dictionary.Add(values[0], values[1]);
+        //        }
+
+        //        //存储     path和       content的全部数据
+        //        //string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+        //        //System.IO.File.WriteAllText(@"IpPort.txt", line);
+
+        //        //再存储一个 放入集合中
+        //        //string fromTextBox = $"{this.IpAddress.Text},{this.PortNum.Text}";
+        //        string fromTextBox = $"{this.IpCombo.Text},{this.PortNum.Text}";
+        //        List<string> ipCombo = new List<string>();
+        //        ipCombo.Add("127.0.0.1,8080");
+        //        ipCombo.Add("0.0.0.0,8080");
+        //        ipCombo.Add(fromTextBox);
+        //        System.IO.File.WriteAllLines(@"IpPortCom.txt", ipCombo);
+
+        //        firstClick = false;
+        //    }
+        //    else
+        //    {
+        //        //this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
+        //        ////Dispatcher.Invoke(() =>
+        //        ////{
+        //        ////    server.Stop();
+        //        ////});
+        //        //this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
+        //        //server.Dispose();
+        //        //MessageBox.Show("已关闭Server" + "\r\n" + "可重启软件再次开启server");
+        //        //firstClick = true;
+        //        //return;
+
+        //        return;
+        //    }
+        //}
+        private void initialSoftware()
+        {           
+            string serverAddress = this.IpCombo.Text.ToString() + ":" + this.PortNum.Text.ToString();
+            server = new SimpleTcpServer(serverAddress);
+            server.Start();
+
+            server.Events.DataReceived += Events_DataReceived;
+
+            string[] defLines = File.ReadAllLines(@"Data.txt");
+            for (int i = 0; i < defLines.Length; i++)
             {
-                //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
-                //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
-                this.Resources["serverStr"] = new TextBlock() { Text = "软件启动" };
-                //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
-                string serverAddress = this.IpCombo.Text.ToString() + ":" + this.PortNum.Text.ToString();
-                server = new SimpleTcpServer(serverAddress);
-                server.Start();
-
-                MessageBox.Show("已连接client，client可以发送消息");
-                //client发送的数据    server数据接收区得到      server数据发送区发送   event
-                server.Events.DataReceived += Events_DataReceived;
-
-                string[] defLines = File.ReadAllLines(@"Data.txt");
-                for (int i = 0; i < defLines.Length; i++)
-                {
-                    //split
-                    string item = defLines[i];
-                    string[] values = item.Split(',');
-                    dictionary.Add(values[0], values[1]);
-                }
-
-                //存储     path和       content的全部数据
-                //string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
-                //System.IO.File.WriteAllText(@"IpPort.txt", line);
-
-                //再存储一个 放入集合中
-                //string fromTextBox = $"{this.IpAddress.Text},{this.PortNum.Text}";
-                string fromTextBox = $"{this.IpCombo.Text},{this.PortNum.Text}";
-                List<string> ipCombo = new List<string>();
-                ipCombo.Add("127.0.0.1,8080");
-                ipCombo.Add("0.0.0.0,8080");
-                ipCombo.Add(fromTextBox);
-                System.IO.File.WriteAllLines(@"IpPortCom.txt", ipCombo);
-
-                firstClick = false;
+                //split
+                string item = defLines[i];
+                string[] values = item.Split(',');
+                dictionary.Add(values[0], values[1]);
             }
-            else
-            {
-                //this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
-                ////Dispatcher.Invoke(() =>
-                ////{
-                ////    server.Stop();
-                ////});
-                //this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
-                //server.Dispose();
-                //MessageBox.Show("已关闭Server" + "\r\n" + "可重启软件再次开启server");
-                //firstClick = true;
-                //return;
 
-                return;
-            }
+            //存储     path和       content的全部数据
+            //string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+            //System.IO.File.WriteAllText(@"IpPort.txt", line);
+
+            //再存储一个 放入集合中
+            //string fromTextBox = $"{this.IpAddress.Text},{this.PortNum.Text}";
+            string fromTextBox = $"{this.IpCombo.Text},{this.PortNum.Text}";
+            List<string> ipCombo = new List<string>();
+            ipCombo.Add("127.0.0.1,8080");
+            ipCombo.Add("0.0.0.0,8080");
+            ipCombo.Add(fromTextBox);
+            System.IO.File.WriteAllLines(@"IpPortCom.txt", ipCombo);
         }
-
 
 
         private void SendDataCommand(object sender, RoutedEventArgs e)
