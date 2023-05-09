@@ -11,8 +11,10 @@
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
     <!-- Width="800" Title="TCP SERVER"  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
     <Window.Resources>
-        <TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>
-        <TextBlock x:Key="startKV" Text="请开启应答"></TextBlock>
+        <!--<TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>-->
+        <TextBlock x:Key="serverStr" Text="请初始化"></TextBlock>
+        <!--<TextBlock x:Key="startKV" Text="请开启应答"></TextBlock>-->
+        <TextBlock x:Key="startKV" Text="请开启SERVER"></TextBlock>
     </Window.Resources>
 
     <Grid Margin="10" >

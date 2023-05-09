@@ -165,7 +165,8 @@ namespace tcp_auto
             if (firstClickKV)
             {
                 this.askAnswerButton.Background = new SolidColorBrush(Colors.Yellow);
-                this.Resources["startKV"] = new TextBlock() { Text = "开启应答" };
+                //this.Resources["startKV"] = new TextBlock() { Text = "开启应答" };
+                this.Resources["startKV"] = new TextBlock() { Text = "开启SERVER" };
                 _startKeyValue = true;
                 //MessageBox.Show("已开启应答");
                 firstClickKV=false;
@@ -173,7 +174,8 @@ namespace tcp_auto
             else
             {
                 this.askAnswerButton.Background = new SolidColorBrush(Colors.LightGray);
-                this.Resources["startKV"] = new TextBlock() { Text = "关闭应答" };
+                //this.Resources["startKV"] = new TextBlock() { Text = "关闭应答" };
+                this.Resources["startKV"] = new TextBlock() { Text = "关闭SERVER" };
                 _startKeyValue = false;
                 firstClickKV=true;
             }
@@ -248,24 +250,43 @@ namespace tcp_auto
                         Thread.Sleep(delayTime);
                         server.Send(clientIpPort, serverSend);
                     } 
-                }
-                else
+                }else if (!dictionary.ContainsKey(getContent) && _startKeyValue is true)
                 {
                     //back     DataShow.DataContext += currentTime + "  " + clientIpPort + "\r\n" + "ACPT " + "\r\n" + getContent + "\r\n";                 
                     //var textGreen = new SolidColorBrush(Colors.Green);
                     //DataShow.Foreground = textGreen;//改变字体颜色 
                     //DataGet.Text = getContent + "  IpPort是:" + clientIpPort;
                     //DataSend.Text = "该键没有对应值";
-                    
+
                     FlowDocument mcFlowDoc = new FlowDocument();
                     // Create a paragraph with text  
                     Paragraph para = new Paragraph();
                     para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "ACPT" + "\r\n") { Foreground = Brushes.LightGray });
                     //para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "\r\n") { Foreground = Brushes.Blue });
                     //para.Inlines.Add(new Bold(new Run("ACPT" + "\r\n")));
-                    para.Inlines.Add(new Run(getContent ) { Foreground = Brushes.Blue });    
+                    para.Inlines.Add(new Run(getContent) { Foreground = Brushes.Blue });
                     // Add the paragraph to blocks of paragraph  
                     ParaText.Blocks.Add(para);
+                    return;
+                }
+                else
+                {
+                    ////back     DataShow.DataContext += currentTime + "  " + clientIpPort + "\r\n" + "ACPT " + "\r\n" + getContent + "\r\n";                 
+                    ////var textGreen = new SolidColorBrush(Colors.Green);
+                    ////DataShow.Foreground = textGreen;//改变字体颜色 
+                    ////DataGet.Text = getContent + "  IpPort是:" + clientIpPort;
+                    ////DataSend.Text = "该键没有对应值";
+
+                    //FlowDocument mcFlowDoc = new FlowDocument();
+                    //// Create a paragraph with text  
+                    //Paragraph para = new Paragraph();
+                    //para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "  " + "ACPT" + "\r\n") { Foreground = Brushes.LightGray });
+                    ////para.Inlines.Add(new Run(currentTime + "  " + clientIpPort + "\r\n") { Foreground = Brushes.Blue });
+                    ////para.Inlines.Add(new Bold(new Run("ACPT" + "\r\n")));
+                    //para.Inlines.Add(new Run(getContent ) { Foreground = Brushes.Blue });    
+                    //// Add the paragraph to blocks of paragraph  
+                    //ParaText.Blocks.Add(para);
+                    //return;
                     return;
                 }
             });
@@ -484,7 +505,8 @@ namespace tcp_auto
             if (firstClick)
             {
                 //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
-                this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+                //this.Resources["serverStr"] = new TextBlock() { Text = "已开启SERVER" };
+                this.Resources["serverStr"] = new TextBlock() { Text = "软件启动" };
                 //string serverAddress = this.IpAddress.Text.ToString() + ":" + this.PortNum.Text.ToString();
                 string serverAddress = this.IpCombo.Text.ToString() + ":" + this.PortNum.Text.ToString();
                 server = new SimpleTcpServer(serverAddress);
@@ -520,15 +542,17 @@ namespace tcp_auto
             }
             else
             {
-                this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
-                //Dispatcher.Invoke(() =>
-                //{
-                //    server.Stop();
-                //});
-                this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
-                server.Dispose();
-                MessageBox.Show("已关闭Server" + "\r\n" + "可重启软件再次开启server");
-                firstClick = true;
+                //this.Resources["serverStr"] = new TextBlock() { Text = "已关闭SERVER" };
+                ////Dispatcher.Invoke(() =>
+                ////{
+                ////    server.Stop();
+                ////});
+                //this.linkButton.Background = new SolidColorBrush(Colors.LightGray);
+                //server.Dispose();
+                //MessageBox.Show("已关闭Server" + "\r\n" + "可重启软件再次开启server");
+                //firstClick = true;
+                //return;
+
                 return;
             }
         }
