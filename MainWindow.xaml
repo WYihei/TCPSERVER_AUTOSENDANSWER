@@ -37,6 +37,13 @@
 
         <Grid Grid.Column="0" >
             <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+                <Border.Effect>
+                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                        <Storyboard.TargetProperty>
+                            BlurRadius
+                        </Storyboard.TargetProperty>
+                    </DropShadowEffect>
+                </Border.Effect>
                 <StackPanel>
                     <TextBlock Text="TCP SERVER" FontWeight="Bold"/>
                     <!--<Border Margin="0 5 0 0" Background="Transparent" CornerRadius="3" >
@@ -53,12 +60,40 @@
                     <TextBlock Text="Ip Address" Margin="0 5 0 0"/>
 
                     <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Background="White">
-                        <TextBox                    
-                        x:Name="IpAddress"
-                        BorderThickness="0" Background="Transparent"                   
-                        VerticalContentAlignment="Center"
-                        VerticalAlignment="Center"
-                         Height="25"  />
+                        <StackPanel>
+                            <!--<TextBox                    
+                                x:Name="IpAddress"
+                                BorderThickness="0" Background="Transparent"                   
+                                VerticalContentAlignment="Center"
+                                VerticalAlignment="Center"
+                                 Height="25"  />-->
+
+                            <ComboBox  IsEditable="True" IsReadOnly="True"
+                                       x:Name="IpCombo"
+                                        BorderThickness="0" Background="Transparent"              
+                                        VerticalContentAlignment="Center"
+                                        VerticalAlignment="Center"
+                                         Height="25" 
+                                       ItemsSource="{Binding ComboIps}"
+                                       DisplayMemberPath="ComboIpAdd"
+                                       >
+                                <!--<ComboBoxItem Content="127.0.0.1"/>
+                                <ComboBoxItem Content="0.0.0.0"/>-->
+                                <!--SelectedItem="{Binding ComboIpAdd}"-->
+                            </ComboBox>
+
+                            <!--<ComboBox  IsEditable="True" IsReadOnly="True"
+                                       x:Name="IpCombo"
+                                        BorderThickness="0" Background="Transparent"              
+                                        VerticalContentAlignment="Center"
+                                        VerticalAlignment="Center"
+                                         Height="25" >
+                                <ComboBoxItem Content="127.0.0.1"/>
+                                <ComboBoxItem Content="0.0.0.0"/>
+                            </ComboBox>-->
+                        </StackPanel>
+                        
+                       
                     </Border>
 
                     <TextBlock Text="Port" Margin="0 5 0 0"/>
@@ -117,7 +152,7 @@
         </Grid>
 
         <!--<Separator Grid.Column="1"  Background="LightGray" />-->
-        <Separator Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="10 0 0 0" >
+        <Separator Grid.Column="1" BorderBrush="White" BorderThickness="1" Margin="10 0 0 0" >
             <Separator.LayoutTransform>
                 <RotateTransform Angle="90" />
             </Separator.LayoutTransform>
@@ -127,6 +162,13 @@
         <!--现在方便看 以后删除-->
         <Grid Grid.Column="2" Margin="10 0 0 0">
             <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+                <Border.Effect>
+                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                        <Storyboard.TargetProperty>
+                            BlurRadius
+                        </Storyboard.TargetProperty>
+                    </DropShadowEffect>
+                </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height=" auto"/>
@@ -199,7 +241,7 @@
 
         </Grid>
 
-        <Separator Grid.Column="3" BorderBrush="LightGray" BorderThickness="1" Margin="10 0">
+        <Separator Grid.Column="3" BorderBrush="White" BorderThickness="1" Margin="10 0">
             <Separator.LayoutTransform>
                 <RotateTransform Angle="90" />
             </Separator.LayoutTransform>
@@ -208,6 +250,13 @@
         <Grid Grid.Column="4" >
             <!--<StackPanel />-->
             <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+                <Border.Effect>
+                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                        <Storyboard.TargetProperty>
+                            BlurRadius
+                        </Storyboard.TargetProperty>
+                    </DropShadowEffect>
+                </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -271,10 +320,11 @@
                     <!--Height="*200" Height="100"-->
                     <!--Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="5" Padding="2" Grid.Row="1" Background="White"-->
                     <Border Background="White"  CornerRadius="5" Grid.Row="2" Margin="0 5 0 5"  BorderBrush="Gray"  BorderThickness="0.5"    >
-                        <DataGrid 
+                        <StackPanel>
+                            <DataGrid Grid.Row="0"
                             Padding="5 5 5 5"
                                
-                          Grid.Row="2"
+                          
                             x:Name="KeyAndValue"                              
                               RowHeaderWidth="0"
 
@@ -291,28 +341,30 @@
                             SelectedIndex="{Binding SelectedIndex}"
                             SelectedItem="{Binding SelectedItem}"
                             ItemsSource="{Binding DataDridKVs}"  >
-                            <DataGrid.Columns>
-                                <!--<DataGridTextColumn
+                                <DataGrid.Columns>
+                                    <!--<DataGridTextColumn
                                     Width="40"    
                                     Header="开启" 
                             Binding="{Binding Use}"/>-->
-                                <!--<DataGridCheckBoxColumn                         
+                                    <!--<DataGridCheckBoxColumn                         
                              Header="启用" 
                             Binding="{Binding Use,Mode=TwoWay}"   />-->
-                                <!--<DataGridCheckBoxColumn                         
+                                    <!--<DataGridCheckBoxColumn                         
                              Header="禁用" 
                             Selector.IsSelected="{Binding UseKV}"
                               />-->
-                                <DataGridTextColumn
+                                    <DataGridTextColumn
                                     MinWidth="120"    
                                     Header="键 Key" 
                             Binding="{Binding DataKey}"/>
-                                <DataGridTextColumn
+                                    <DataGridTextColumn
                                     MinWidth="120"                                
                                     Header="值 Val" 
                             Binding="{Binding DataValue}"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                        
                     </Border>
                     
 
@@ -438,6 +490,28 @@
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
+
+                            <!--<Button  Margin="20 0 0 0" 
+                        Width="20"                     
+                        Height="20"
+                                  ToolTip="延迟应答"
+                            ToolTipService.InitialShowDelay="1" 
+                            ToolTipService.ShowDuration="2000" 
+                            ToolTipService.BetweenShowDelay="10000" 
+                        Command="{Binding DelayTaskCommand}">
+                                <Button.Template>
+                                    <ControlTemplate  >
+                                        <Border  BorderThickness="0" CornerRadius="2">
+                                            <Image Source="D:\tcp_auto\tcp_auto\Image\wait.png"  Stretch="Uniform"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Opacity" Value="0.2" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>-->
                         </WrapPanel>
                         <!--<WrapPanel Margin="0 20 0 0">
                         <Button                   
@@ -468,13 +542,25 @@
                             </Button.Template>
                         </Button>
                     </WrapPanel>-->
+                        <WrapPanel Margin=" 0 5 0 0">
+                            <TextBlock Text="延迟(ms)"  VerticalAlignment="Center"/>
+                            <Border Grid.Row="1" Margin="5 0 0 0" Background="White"  VerticalAlignment="Top" MinWidth="120" HorizontalAlignment="Stretch" CornerRadius="3" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
+                                <TextBox                         
+                            x:Name="DelayTask"
+                            BorderThickness="0" 
+                            Background="Transparent"                        
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Center"
+                            />
+                            </Border>
+                        </WrapPanel>
                     </StackPanel>
                 </Grid>
             </Border>
             
         </Grid>
         
-        <Separator Grid.Column="5" BorderBrush="LightGray" BorderThickness="1" Margin="10 0">
+        <Separator Grid.Column="5" BorderBrush="White" BorderThickness="1" Margin="10 0">
             <Separator.LayoutTransform>
                 <RotateTransform Angle="90" />
             </Separator.LayoutTransform>
@@ -482,6 +568,13 @@
 
         <Grid Grid.Column="6" >
             <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+                <Border.Effect>
+                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                        <Storyboard.TargetProperty>
+                            BlurRadius
+                        </Storyboard.TargetProperty>
+                    </DropShadowEffect>
+                </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
