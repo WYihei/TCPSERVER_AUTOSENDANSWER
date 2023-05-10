@@ -238,7 +238,6 @@ namespace tcp_auto
                     ParaText.Blocks.Add(para);
                     //server 发送数据   返回给client（不要忘记发送）
                     string serverSend = dictionary[getContent];
-
                     string inputTime = this.DelayTask.Text;
                     if (string.IsNullOrEmpty(inputTime))
                     {
