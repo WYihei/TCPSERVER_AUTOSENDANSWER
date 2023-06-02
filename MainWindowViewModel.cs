@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
+using SuperSimpleTcp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,9 +9,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Threading;
 
 namespace tcp_auto
 {
@@ -47,9 +52,9 @@ namespace tcp_auto
 
         private ObservableCollection<MainModel> _dataDridKVs;
 
-        private ObservableCollection<ComboIp> comboIp;
+        private ObservableCollection<string> comboIp;
 
-        public ObservableCollection<ComboIp> ComboIps
+        public ObservableCollection<string> ComboIps
         {
             get { return comboIp; }
             set
@@ -58,20 +63,167 @@ namespace tcp_auto
                 NotifyChanged();
             }
         }
-
-        public MainWindowViewModel()
+        public string SelectedIp { get; set; }
+        public int PortNum { get; set; }
+        public string DataLog { get; set; }
+		public MainWindowViewModel()
         {
             InitData();
             //index
             ipaddress();
-            readDatagrid();
+            //readDatagrid();
             comboDataShow();
-        }
+			readPort();
+			readIp();
+			initialSoftware();
+		}
+		SimpleTcpServer server;
+		public ICommand StartKeyValueCommand { get => new RelayCommand(() =>
+        {
+            if (server?.IsListening ?? false)
+            {
+                server.Stop();
+            }
+            else
+            {
+                string serverAddress = SelectedIp.ToString() + ":" + this.PortNum.ToString();
+                server = new SimpleTcpServer(serverAddress);
+                server.Events.DataReceived += Events_DataReceived;
+                server.Start();
+            }
 
-        private void InitData()
+        });
+        }
+        public ICommand SendDataCommand { get => new RelayCommand(() =>
+        {
+            if (server == null)
+            {
+                MessageBox.Show("请先连接客户端再发送数据");
+                return;
+            }
+            //要发送的内容     一个一个发
+
+            //获取client的IpPort   再发送
+            var allClients = server.GetClients();
+            List<string> clientsList = allClients.ToList();
+            var first = clientsList[0];
+
+            server.Send(first, DataLog);
+
+            //接收到    client发送的数据    时间显示
+            //string currentTime = DateTime.Now.ToString();
+        });
+        }
+		public void readPort()
+		{
+			if (!File.Exists(@"IpPort.txt"))
+			{
+				//不存在文件
+				PortNum = 8888;
+
+				return;
+			}
+			else
+			{
+				//读取
+				//return;
+				string[] defLines = File.ReadAllLines(@"IpPort.txt");
+				for (int i = 0; i < defLines.Length; i++)
+				{
+					//split
+					string item = defLines[i];
+					string[] values = item.Split(',');
+
+					//this.IpAddress.Text = values[0].ToString();
+					PortNum = Convert.ToInt32(values[1]);
+					//this.IpCombo.Text = _ipaddress;
+					//this.IpCombo.Text = values[0].ToString();
+				}
+			}
+		}
+
+		public void readIp()
+		{
+			if (!File.Exists(@"ipComboInitial.txt"))
+			{
+				//不存在文件
+				return;
+			}
+			else
+			{
+
+				string[] defLines = File.ReadAllLines(@"ipComboInitial.txt");
+				for (int i = 0; i < defLines.Length; i++)
+				{
+					//split
+					string item = defLines[i];
+					//string[] values = item.Split(',');
+					SelectedIp = item;
+				}
+			}
+		}
+        public int DelayTaskTime { get; set; } = 0;
+		private void Events_DataReceived(object? sender, DataReceivedEventArgs e)
+		{
+			//check的true false
+			var clientData = e.Data;
+			var byteArray = clientData.ToArray();
+			string getContent = System.Text.Encoding.Default.GetString(byteArray);
+
+			//e  client的IpPort
+			var clientIpPort = e.IpPort.ToString();
+            string this_time_log = "";
+			this_time_log = DateTime.Now.ToShortDateString()+ " " + DateTime.Now.ToLongTimeString() +":"+ DateTime.Now.Millisecond + " from " + clientIpPort + "\r\n" + getContent + "\r\n";
+				//接收到    client发送的数据    时间显示
+
+                //var aa=DataDridKVs[SelectedIndex].Use;
+                var allReply = DataDridKVs.Where(a => a.DataKey == getContent && a.IsEnable).ToList();
+				if (allReply.Count > 0)
+				//if (dictionary.ContainsKey(getContent))
+				{
+                foreach (var item in allReply)
+                {
+
+					//server 发送数据   返回给client（不要忘记发送）
+					string serverSend = item.DataValue;
+
+						Thread.Sleep(DelayTaskTime);
+						server.Send(clientIpPort, serverSend);
+					this_time_log += DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + " to " + clientIpPort + "\r\n" + serverSend + "\r\n";
+
+				}
+				}
+            DataLog = this_time_log;
+		}
+		private void initialSoftware()
+		{
+
+			string[] defLines = File.ReadAllLines("Data.txt");
+			for (int i = 0; i < defLines.Length; i++)
+			{
+				//split
+				string item = defLines[i];
+				string[] values = item.Split("<-->");
+				DataDridKVs.Add(new MainModel() { DataKey = values[0], DataValue = values[1] });
+			}
+
+			//存储     path和       content的全部数据
+			//string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
+			//System.IO.File.WriteAllText(@"IpPort.txt", line);
+
+			//再存储一个 放入集合中
+			//string fromTextBox = $"{this.IpAddress.Text},{this.PortNum.Text}";
+			string fromTextBox = $"{SelectedIp},{this.PortNum}";
+			List<string> ipCombo = new List<string>();
+			ipCombo.Add("127.0.0.1,8888");
+			ipCombo.Add("0.0.0.0,8888");
+			ipCombo.Add(fromTextBox);
+			System.IO.File.WriteAllLines(@"IpPortCom.txt", ipCombo);
+		}
+		private void InitData()
         {
             DataDridKVs = new ObservableCollection<MainModel>();
-            ComboIps = new ObservableCollection<ComboIp>();
+            ComboIps = new ObservableCollection<string>();
             //便于查看  之后删除
             //DataDridKVs.Add(new MainModel()
             //{
@@ -80,34 +232,13 @@ namespace tcp_auto
             //});
         }
 
-        Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
         public void comboDataShow()
         {
-            //之前的一种逻辑   现阶段不用
-            //string[] allIp = File.ReadAllLines(@"IpPortCom.txt");
-            //for (int i = 0; i < allIp.Length; i++)
-            //{
-            //    //split
-            //    string item = allIp[i];
-            //    string[] values = item.Split(',');
-            //    ComboIps.Add(new ComboIp()
-            //    {
-            //        ComboIpAdd = values[0] 
-            //    });
-            //}
-            ComboIps.Add(new ComboIp()
-            {
-                ComboIpAdd = _ipaddress
-            });
-            ComboIps.Add(new ComboIp()
-            {
-                ComboIpAdd = "127.0.0.1"
-            });
-            ComboIps.Add(new ComboIp()
-            {
-                ComboIpAdd = "0.0.0.0"
-            });
+
+            ComboIps.Add(_ipaddress);
+            ComboIps.Add("127.0.0.1");
+            ComboIps.Add("0.0.0.0");
             //存储 初始化打开界面不用选   再存储一个 放入集合中
             List<string> ipComboInitial = new List<string>();
             ipComboInitial.Add(_ipaddress);
@@ -128,19 +259,27 @@ namespace tcp_auto
         }
 
         public void readDatagrid()
-        {        
+		{
+            if (!File.Exists("Data.txt"))
+            {
+                File.Create("Data.txt");
+
+			}
             string[] defLines = File.ReadAllLines(@"Data.txt");
             for (int i = 0; i < defLines.Length; i++)
             {
                 //split
                 string item = defLines[i];
-                string[] values = item.Split(',');
+                string[] values = item.Split("<-->");
 
-                DataDridKVs.Add(new MainModel()
+                if (values.Length > 1)
                 {
-                    DataKey = double.Parse(values[0].Replace(" ", "")).ToString(),
-                    DataValue = double.Parse(values[1].Replace(" ", "")).ToString(),
-                });
+                    DataDridKVs.Add(new MainModel()
+                    {
+                        DataKey = values[0],
+                        DataValue = values[1],
+                    });
+                }
             }
         }
 
@@ -375,121 +514,25 @@ namespace tcp_auto
                     //if (!string.IsNullOrEmpty(KeyMess) && !string.IsNullOrEmpty(ValueMess))
                     if (!string.IsNullOrEmpty(KeyMess))
                     {
-                        //提示弹窗即可
-                        for (int i = 0; i < DataDridKVs.Count; i++)
-                        {
-                            //if (DataDridKVs[i].DataKey.Contains(KeyMess))
-                            if (DataDridKVs[i].DataKey.Contains(KeyMess)&& DataDridKVs[i].DataKey.Length== KeyMess.Length)
-                            {
-                                MessageBox.Show("存在重复的键");
-                                return;
-                            }
-
-                            //启用
-                            //if (DataDridKVs[i].Use == true)
-                            //{
-                            //    MessageBox.Show("存在重复的键");
-                            //    return;
-                            //}
-
-                            //else
-                            //{
-                            //    DataDridKVs.Add(new MainModel()
-                            //    {
-                            //        DataKey = KeyMess,
-                            //        DataValue = ValueMess
-                            //    });
-                            //}
-                        }
-
-                        //if (DataDridKVs.Contains(KeyMess))
-                        //{
-                        //    MessageBox.Show("存在重复的键，请删除");
-                        //}
 
                         DataDridKVs.Add(new MainModel()
                         {
-                            //Use = true,
                             DataKey = KeyMess,
-                            DataValue = ValueMess
+                            DataValue = ValueMess,
+                            IsEnable = true
                         });
 
-                        Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
 
                         //存储     path和       content的全部数据
-                        string allContents = "";
-                        for (int i = 0; i < DataDridKVs.Count; i++)
-                        {
-                            MainModel item = DataDridKVs[i];
-                            string line = "";
-                            line += $"{item.DataKey},{item.DataValue}\n";
-                            allContents += line;
-                        }
-      
-                        System.IO.File.WriteAllText(@"Data.txt", allContents);
+                        SaveReplyData();
 
-                        //随后删除
-                        //for (int i = 0; i < DataDridKVs.Count; i++)
-                        //{
-                        //    if (DataDridKVs[i].DataKey.Contains(KeyMess))
-                        //    {
-                        //        return;
-                        //    }
-                        //    else
-                        //    {
-                        //        DataDridKVs.Add(new MainModel()
-                        //        {
-                        //            DataKey = KeyMess,
-                        //            DataValue = ValueMess
-                        //        });
-                        //    }
-                        //}
 
-                        //DataDridKVs.Add(new MainModel()
-                        //{
-                        //    DataKey = KeyMess,
-                        //    DataValue = ValueMess
-                        //});
-
-                        //if (DataDridKVs.Count > 0)
-                        //{
-                        //    for (int i = 0; i < DataDridKVs.Count; i++)
-                        //    {
-                        //        //if (!DataDridKVs[i].DataKey.Contains(KeyMess))
-                        //        if (DataDridKVs[i].DataKey.Contains(KeyMess))
-                        //        {
-                        //            return;
-                        //        }
-                        //        else
-                        //        {
-                        //            DataDridKVs.Add(new MainModel()
-                        //            {
-                        //                DataKey = KeyMess,
-                        //                DataValue = ValueMess
-                        //            });
-                        //        }
-                        //    }        
-                        //    Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
-                        //}
-                        ////datagrid为空时   直接添加
-                        //else
-                        //{
-                        //    DataDridKVs.Add(new MainModel()
-                        //    {
-                        //        DataKey = KeyMess,
-                        //        DataValue = ValueMess
-                        //    });
-                        //    Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
-                        //}
-                    }
+					}
                     else
                     {
                         MessageBox.Show("键值为空，请输入");
                         return;
                     }
-
-                    ////Messenger Send
-                    //Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
                 });
             }
         }
@@ -503,16 +546,7 @@ namespace tcp_auto
             {
                 return new RelayCommand<object>((obj) =>
                 {
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        //if (SelectedItem is MainModel mainModel)
-                        //{
-                        //    //Messenger Send
-                        //    Messenger.Default.Send<MainModel>(mainModel, "RemoveMess");
-                        //}
-                        //DataDridKVs.RemoveAt(SelectedIndex);
 
-                        //datagrid不选择时候 不报错
                         if (SelectedItem==null)
                         {
                             MessageBox.Show("请先选择需要删除的任务");
@@ -520,33 +554,31 @@ namespace tcp_auto
                         }
                         else
                         {
-                            if (SelectedItem is MainModel mainModel)
-                            {
-                                //Messenger Send
-                                Messenger.Default.Send<MainModel>(mainModel, "RemoveMess");
-                            }
-                            DataDridKVs.RemoveAt(SelectedIndex);
 
+                            DataDridKVs.Remove(SelectedItem);
 
+                            SaveReplyData();
 
-                            //存储     path和       content的全部数据
-                            string allContents = "";
-                            for (int i = 0; i < DataDridKVs.Count; i++)
-                            {
-                                MainModel item = DataDridKVs[i];
-                                string line = "";
-                                line += $"{item.DataKey},{item.DataValue}\n";
-                                allContents += line;
-                            }
-
-                            System.IO.File.WriteAllText(@"Data.txt", allContents);
-                        }
-                    });
+						}
+                   
                 });
             }
         }
+        void SaveReplyData()
+        {
+			string allContents = "";
+			for (int i = 0; i < DataDridKVs.Count; i++)
+			{
+				MainModel item = DataDridKVs[i];
+				string line = "";
+				line += $"{item.DataKey}<-->{item.DataValue}\n";
+				allContents += line;
+			}
 
-        public ICommand ExportCommand
+			System.IO.File.WriteAllText(@"Data.txt", allContents);
+		}
+
+		public ICommand ExportCommand
         {
             get
             {

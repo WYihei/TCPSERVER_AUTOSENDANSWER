@@ -1,64 +1,74 @@
-﻿<Window x:Class="tcp_auto.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:tcp_auto"
-        mc:Ignorable="d"
-        
-        Width="1000"
-        Height="500"   
-    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
-    <!-- Width="800" Title="TCP SERVER"  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"-->
+﻿<Window
+    x:Class="tcp_auto.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:tcp_auto"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+    Width="1000"
+    Height="500"
+    d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
+    mc:Ignorable="d">
+    <!--  Width="800" Title="TCP SERVER"  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"  -->
     <Window.Resources>
         <!--<TextBlock x:Key="serverStr" Text="请开启SERVER"></TextBlock>-->
-        <TextBlock x:Key="serverStr" Text="请初始化"></TextBlock>
+        <TextBlock x:Key="serverStr" Text="请初始化" />
         <!--<TextBlock x:Key="startKV" Text="请开启应答"></TextBlock>-->
-        <TextBlock x:Key="startKV" Text="请开启SERVER"></TextBlock>
+        <TextBlock x:Key="startKV" Text="请开启SERVER" />
     </Window.Resources>
 
-    <Grid Margin="10" >
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-            
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+
             <!--<ColumnDefinition Width="150"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>-->
-            
+
 
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" >
-            <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+        <Grid Grid.Column="0">
+            <Border
+                Padding="15"
+                Background="#F7F7F8"
+                CornerRadius="5">
                 <Border.Effect>
-                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                    <DropShadowEffect
+                        BlurRadius="5"
+                        Direction="270"
+                        Opacity="0.5"
+                        RenderingBias="Performance"
+                        ShadowDepth="1"
+                        Color="Black">
                         <Storyboard.TargetProperty>
                             BlurRadius
                         </Storyboard.TargetProperty>
                     </DropShadowEffect>
                 </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="TCP SERVER" FontWeight="Bold"/>
+                    <TextBlock FontWeight="Bold" Text="TCP SERVER" />
                     <!--<Border Margin="0 5 0 0" Background="Transparent" CornerRadius="3" >
-                    <ComboBox                
+                    <ComboBox
                     IsDropDownOpen="False"
-                    Name="协议类型com"                    
+                    Name="协议类型com"
                     Height="25"
                     IsReadOnly="True"
                     SelectedIndex="0" >
                     </ComboBox>
                 </Border>-->
 
-                    <!--之后改-->
+                    <!--  之后改  -->
                     <!--<Button Height="25" Margin="0 5 0 0"  x:Name="linkButton" >
                         <Button.Style>
                             <Style TargetType="Button">
@@ -82,76 +92,101 @@
                         </Button.Style>
                     </Button>-->
 
-                    <TextBlock Text="Ip Address" Margin="0 5 0 0"/>
+                    <TextBlock Margin="0,5,0,0" Text="Ip Address" />
 
-                    <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Background="White">
+                    <Border
+                        Margin="0,5,0,0"
+                        Padding="2"
+                        Background="White"
+                        BorderBrush="Gray"
+                        BorderThickness="0.5"
+                        CornerRadius="3">
                         <StackPanel>
-                            <!--<TextBox                    
+                            <!--<TextBox
                                 x:Name="IpAddress"
-                                BorderThickness="0" Background="Transparent"                   
+                                BorderThickness="0" Background="Transparent"
                                 VerticalContentAlignment="Center"
                                 VerticalAlignment="Center"
                                  Height="25"  />-->
 
-                            <ComboBox  IsEditable="True" IsReadOnly="True"
-                                       x:Name="IpCombo"
-                                        BorderThickness="0" Background="Transparent"              
-                                        VerticalContentAlignment="Center"
-                                        VerticalAlignment="Center"
-                                         Height="25" 
-                                       ItemsSource="{Binding ComboIps}"
-                                       DisplayMemberPath="ComboIpAdd"
-                                       >
+                            <ComboBox
+                                x:Name="IpCombo"
+                                Height="25"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsEditable="False"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding ComboIps}"
+                                SelectedItem="{Binding SelectedIp}">
                                 <!--<ComboBoxItem Content="127.0.0.1"/>
                                 <ComboBoxItem Content="0.0.0.0"/>-->
-                                <!--SelectedItem="{Binding ComboIpAdd}"-->
+                                <!--  SelectedItem="{Binding ComboIpAdd}"  -->
                             </ComboBox>
 
-                            <!--<ComboBox  IsEditable="True" IsReadOnly="True"
-                                       x:Name="IpCombo"
-                                        BorderThickness="0" Background="Transparent"              
-                                        VerticalContentAlignment="Center"
-                                        VerticalAlignment="Center"
-                                         Height="25" >
-                                <ComboBoxItem Content="127.0.0.1"/>
-                                <ComboBoxItem Content="0.0.0.0"/>
-                            </ComboBox>-->
                         </StackPanel>
-                        
-                       
+
+
                     </Border>
 
-                    <TextBlock Text="Port" Margin="0 5 0 0"/>
-                    <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Background="White">
-                        <!--Text="8080"-->
-                        <TextBox                        
-                        x:Name="PortNum"
-                        BorderThickness="0" 
-                        Background="Transparent"
-                        VerticalContentAlignment="Center"
-                        VerticalAlignment="Center"
-                         Height="25" />
+                    <TextBlock Margin="0,5,0,0" Text="Port" />
+                    <Border
+                        Margin="0,5,0,0"
+                        Padding="2"
+                        Background="White"
+                        BorderBrush="Gray"
+                        BorderThickness="0.5"
+                        CornerRadius="3">
+                        <!--  Text="8080"  -->
+                        <TextBox
+                            x:Name="PortNum"
+                            Height="25"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Text="{Binding PortNum}" />
                     </Border>
 
-                    <Button  Grid.Row="3"     Margin="0 40 0 0"  
-                       
+                    <ToggleButton
+                        x:Name="askAnswerButton"
+                        Grid.Row="3"
                         Height="30"
-                     Click="StartKeyValue"
-                     x:Name="askAnswerButton">
-                        <Button.Template >
-                            <ControlTemplate  >
-                                <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="6">
-                                    <Border.Background>#FBC12D</Border.Background>
-                                    <ContentPresenter Content="{DynamicResource startKV}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                        Margin="0,40,0,0"
+                        Command="{Binding StartKeyValueCommand}">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Content" Value="打开服务器" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Background" Value="Orange" />
+                                        <Setter Property="BorderBrush" Value="White" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="Content" Value="关闭服务器" />
+                                    </Trigger>
 
-                    <!--原 back-->
-                    <!--<Button 
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+
+                    <!--  原 back  -->
+                    <!--<Button
                     x:Name="linkButton"
-                    Margin="0 40 0 0"  
+                    Margin="0 40 0 0"
                     Height="30"
                     Click="LinkCommand"
                     Background="#FBC12D"  >
@@ -164,24 +199,37 @@
                     </Button.Template>
                 </Button>-->
 
-                    
+
                 </StackPanel>
             </Border>
         </Grid>
 
         <!--<Separator Grid.Column="1"  Background="LightGray" />-->
-        <Separator Grid.Column="1" BorderBrush="White" BorderThickness="1" Margin="10 0 0 0" >
+        <Separator
+            Grid.Column="1"
+            Margin="10,0,0,0"
+            BorderBrush="Gray"
+            BorderThickness="1">
             <Separator.LayoutTransform>
                 <RotateTransform Angle="90" />
             </Separator.LayoutTransform>
         </Separator>
 
 
-        <!--现在方便看 以后删除-->
-        <Grid Grid.Column="2" Margin="10 0 0 0">
-            <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+        <!--  现在方便看 以后删除  -->
+        <Grid Grid.Column="2" Margin="10,0,0,0">
+            <Border
+                Padding="15"
+                Background="#F7F7F8"
+                CornerRadius="5">
                 <Border.Effect>
-                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                    <DropShadowEffect
+                        BlurRadius="5"
+                        Direction="270"
+                        Opacity="0.5"
+                        RenderingBias="Performance"
+                        ShadowDepth="1"
+                        Color="Black">
                         <Storyboard.TargetProperty>
                             BlurRadius
                         </Storyboard.TargetProperty>
@@ -189,29 +237,38 @@
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=" auto"/>
-                        <RowDefinition Height=" *"/>
-                        <RowDefinition Height=" auto"/>
+                        <RowDefinition Height=" auto" />
+                        <RowDefinition Height=" *" />
+                        <RowDefinition Height=" auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="数据应答区 Data-Show Zone" Grid.Row="0" FontWeight="Bold"/>
+                    <TextBlock
+                        Grid.Row="0"
+                        FontWeight="Bold"
+                        Text="数据应答区 Data-Show Zone" />
 
-                    <Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="5" Padding="2" Grid.Row="1" Background="White">
-                        <!--Width="150"-->
-                        <!--<TextBox  
-                        x:Name="DataShow"                       
-                        BorderThickness="0" 
+                    <Border
+                        Grid.Row="1"
+                        Margin="0,5,0,0"
+                        Padding="2"
+                        Background="White"
+                        BorderBrush="Gray"
+                        BorderThickness="0.5"
+                        CornerRadius="5">
+                        <!--  Width="150"  -->
+                        <!--<TextBox
+                        x:Name="DataShow"
+                        BorderThickness="0"
                         Background="Transparent"  />-->
-                        <RichTextBox x:Name="DataShow"  BorderThickness="0" Background="Transparent">
-                            <FlowDocument Name="ParaText" >
-                                <!--<Paragraph  >
-                            <TextBox  x:Name="DataShow"  BorderThickness="0"   Background="Transparent" />
-                            <TextBox  x:Name="DataShow2"  BorderThickness="0"   Background="Transparent" />
-                        </Paragraph>-->
-                            </FlowDocument>
-                        </RichTextBox>
+                        <RichTextBox
+                            x:Name="DataShow"
+                            local:RichTextBoxHelper.RichText="{Binding DataLog, Mode=TwoWay}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            VerticalScrollBarVisibility="Auto"
+                            VirtualizingPanel.IsVirtualizing="True" />
                     </Border>
 
-                    <!--<Button  Grid.Row="3"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
+                    <!--<Button  Grid.Row="3"     Margin="0 5 0 0"   HorizontalAlignment="Left"
                         Width="100"
                         Height="25"
                      Click="StartKeyValue"
@@ -226,21 +283,21 @@
                         </Button.Template>
                     </Button>-->
 
-                    <!--<TextBlock 
+                    <!--<TextBlock
                     Text="数据发送区(考虑删除)"
                     Margin="0 40 0 0" />-->
 
-                    <!--暂时注释-->
+                    <!--  暂时注释  -->
                     <!--<Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
-                    <TextBox 
+                    <TextBox
                         x:Name="DataSend"
-                        BorderThickness="0" 
-                        Background="Transparent"                              
+                        BorderThickness="0"
+                        Background="Transparent"
                         Height="50" />
                 </Border>-->
 
-                    <!--<Button 
-                    Margin="0 5 0 0"  
+                    <!--<Button
+                    Margin="0 5 0 0"
                     Height="30"
                     Click="Send_Data">
                     <Button.Template >
@@ -254,21 +311,34 @@
                 </Button>-->
                 </Grid>
             </Border>
-            
+
 
         </Grid>
 
-        <Separator Grid.Column="3" BorderBrush="White" BorderThickness="1" Margin="10 0">
+        <Separator
+            Grid.Column="3"
+            Margin="10,0"
+            BorderBrush="White"
+            BorderThickness="1">
             <Separator.LayoutTransform>
                 <RotateTransform Angle="90" />
             </Separator.LayoutTransform>
         </Separator>
-        
-        <Grid Grid.Column="4" >
+
+        <Grid Grid.Column="4">
             <!--<StackPanel />-->
-            <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+            <Border
+                Padding="15"
+                Background="#F7F7F8"
+                CornerRadius="5">
                 <Border.Effect>
-                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                    <DropShadowEffect
+                        BlurRadius="5"
+                        Direction="270"
+                        Opacity="0.5"
+                        RenderingBias="Performance"
+                        ShadowDepth="1"
+                        Color="Black">
                         <Storyboard.TargetProperty>
                             BlurRadius
                         </Storyboard.TargetProperty>
@@ -276,38 +346,59 @@
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                         <!--<RowDefinition Height="auto"/>-->
                     </Grid.RowDefinitions>
-                    <TextBlock Text="应答键值" FontWeight="Bold"/>
-                    <StackPanel Margin="0 5 0 0" VerticalAlignment="Top" Grid.Row="1">
+                    <TextBlock FontWeight="Bold" Text="应答键值" />
+                    <StackPanel
+                        Grid.Row="1"
+                        Margin="0,5,0,0"
+                        VerticalAlignment="Top">
                         <WrapPanel>
-                            <TextBlock Text="键" VerticalAlignment="Center"/>
+                            <TextBlock VerticalAlignment="Center" Text="键" />
                             <!--<Border Margin="0 5 0 30" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">-->
-                            <Border Margin="5 0 0 0" Background="White" VerticalAlignment="Top" MinWidth="220" HorizontalAlignment="Stretch" CornerRadius="3" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
-                                <TextBox                            
-                            x:Name="Key"
-                            BorderThickness="0" 
-                            Background="Transparent"                        
-                            VerticalContentAlignment="Center"
-                            VerticalAlignment="Center"  
-                            Text="{Binding KeyMess}"/>
+                            <Border
+                                MinWidth="220"
+                                Margin="5,0,0,0"
+                                Padding="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="0.5"
+                                CornerRadius="3">
+                                <TextBox
+                                    x:Name="Key"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Text="{Binding KeyMess}" />
                             </Border>
                         </WrapPanel>
 
-                        <WrapPanel Margin="0 5 0 0">
-                            <TextBlock Text="值"  VerticalAlignment="Center"/>
-                            <Border Margin="5 0 0 0" Background="White"  VerticalAlignment="Top" MinWidth="220" HorizontalAlignment="Stretch" CornerRadius="3" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
-                                <TextBox                         
-                            x:Name="Value"
-                            BorderThickness="0" 
-                            Background="Transparent"                        
-                            VerticalContentAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding ValueMess}"/>
+                        <WrapPanel Margin="0,5,0,0">
+                            <TextBlock VerticalAlignment="Center" Text="值" />
+                            <Border
+                                MinWidth="220"
+                                Margin="5,0,0,0"
+                                Padding="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="0.5"
+                                CornerRadius="3">
+                                <TextBox
+                                    x:Name="Value"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Text="{Binding ValueMess}" />
                             </Border>
                         </WrapPanel>
 
@@ -315,10 +406,10 @@
                     </StackPanel>
 
 
-                    <!--<DataGrid Margin="0 5 0 0" 
+                    <!--<DataGrid Margin="0 5 0 0"
                           Height="200"
                             x:Name="KeyAndValue"
-                                                 
+
                             AutoGenerateColumns="False"
                             Background="White"
                             BorderThickness="0"
@@ -326,84 +417,85 @@
                             CanUserDeleteRows="False"
                             FontSize="12"
                             GridLinesVisibility="Horizontal"
-                            HeadersVisibility="All"                          
+                            HeadersVisibility="All"
                             RowHeight="24"
-                          
+
                             SelectedIndex="{Binding SelectedIndex}"
                             SelectedItem="{Binding SelectedItem}"
                             ItemsSource="{Binding DataDridKVs}"  >-->
 
 
-                    <!--Height="*200" Height="100"-->
-                    <!--Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="5" Padding="2" Grid.Row="1" Background="White"-->
-                    <Border Background="White"  CornerRadius="5" Grid.Row="2" Margin="0 5 0 5"  BorderBrush="Gray"  BorderThickness="0.5"    >
+                    <!--  Height="*200" Height="100"  -->
+                    <!--  Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="5" Padding="2" Grid.Row="1" Background="White"  -->
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,5,0,5"
+                        Background="White"
+                        BorderBrush="Gray"
+                        BorderThickness="0.5"
+                        CornerRadius="5">
                         <StackPanel>
-                            <DataGrid Grid.Row="0"
-                            Padding="5 5 5 5"
-                               
-                          
-                            x:Name="KeyAndValue"                              
-                              RowHeaderWidth="0"
-
-                            AutoGenerateColumns="False"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            CanUserAddRows="False"
-                            CanUserDeleteRows="False"
-                            FontSize="12"
-                            GridLinesVisibility="Horizontal"
-                            HeadersVisibility="All"                          
-                            RowHeight="24"
-                          
-                            SelectedIndex="{Binding SelectedIndex}"
-                            SelectedItem="{Binding SelectedItem}"
-                            ItemsSource="{Binding DataDridKVs}"  >
+                            <DataGrid
+                                x:Name="KeyAndValue"
+                                Grid.Row="0"
+                                Padding="5,5,5,5"
+                                AutoGenerateColumns="False"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CanUserAddRows="False"
+                                CanUserDeleteRows="False"
+                                FontSize="12"
+                                GridLinesVisibility="Horizontal"
+                                HeadersVisibility="All"
+                                ItemsSource="{Binding DataDridKVs}"
+                                RowHeaderWidth="0"
+                                RowHeight="24"
+                                SelectedIndex="{Binding SelectedIndex}"
+                                SelectedItem="{Binding SelectedItem}">
                                 <DataGrid.Columns>
-                                    <!--<DataGridTextColumn
-                                    Width="40"    
-                                    Header="开启" 
-                            Binding="{Binding Use}"/>-->
-                                    <!--<DataGridCheckBoxColumn                         
-                             Header="启用" 
-                            Binding="{Binding Use,Mode=TwoWay}"   />-->
-                                    <!--<DataGridCheckBoxColumn                         
-                             Header="禁用" 
-                            Selector.IsSelected="{Binding UseKV}"
-                              />-->
+                        
+                                    <DataGridTemplateColumn>
+
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding Path=IsEnable, UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn
-                                    MinWidth="120"    
-                                    Header="键 Key" 
-                            Binding="{Binding DataKey}"/>
+                                        MinWidth="120"
+                                        Binding="{Binding DataKey}"
+                                        Header="键 Key" />
                                     <DataGridTextColumn
-                                    MinWidth="120"                                
-                                    Header="值 Val" 
-                            Binding="{Binding DataValue}"/>
+                                        MinWidth="120"
+                                        Binding="{Binding DataValue}"
+                                        Header="值 Val" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
-                        
+
                     </Border>
-                    
-
-
-                    <StackPanel Margin="0 5 0 0" Grid.Row="3">
-                        <WrapPanel >
-                            <Button                   
-                        Width="20"
-                        Height="20"
-                            ToolTip="新增应答键值对"
-                            ToolTipService.InitialShowDelay="1" 
-                            ToolTipService.ShowDuration="2000" 
-                            ToolTipService.BetweenShowDelay="10000"                          
-                            Command="{Binding AddCommand}">
 
 
 
-                                <Button.Template >
-                                    <ControlTemplate  >
-                                        <Border  BorderThickness="0" CornerRadius="2">
+                    <StackPanel Grid.Row="3" Margin="0,5,0,0">
+                        <WrapPanel>
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Command="{Binding AddCommand}"
+                                ToolTip="新增应答键值对"
+                                ToolTipService.BetweenShowDelay="10000"
+                                ToolTipService.InitialShowDelay="1"
+                                ToolTipService.ShowDuration="2000">
+
+
+
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Border BorderThickness="0" CornerRadius="2">
                                             <WrapPanel>
-                                                <Image Source="D:\tcp_auto\tcp_auto\Image\addB.png"  Stretch="Uniform"/>
+                                                <Image Source="\Image\addB.png" Stretch="Uniform" />
                                                 <!--<ContentPresenter Content="hh" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>-->
                                             </WrapPanel>
                                         </Border>
@@ -416,7 +508,7 @@
 
                                 </Button.Template>
                             </Button>
-                            <!--<Button                   
+                            <!--<Button
                         Width="60"
                         Height="25"
                         Command="{Binding AddCommand}">
@@ -430,23 +522,24 @@
                             </Button.Template>
                         </Button>-->
 
-                            <Button  Margin="20 0 0 0" 
-                        Width="20"                     
-                        Height="20"
-                                 ToolTip="删除应答键值对"
-                            ToolTipService.InitialShowDelay="1" 
-                            ToolTipService.ShowDuration="2000" 
-                            ToolTipService.BetweenShowDelay="10000"   
-                        Command="{Binding DeleteCommand}">
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="20,0,0,0"
+                                Command="{Binding DeleteCommand}"
+                                ToolTip="删除应答键值对"
+                                ToolTipService.BetweenShowDelay="10000"
+                                ToolTipService.InitialShowDelay="1"
+                                ToolTipService.ShowDuration="2000">
                                 <Button.Template>
-                                    <ControlTemplate  >
+                                    <ControlTemplate>
                                         <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
                                         <ContentPresenter Content="删应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                     </Border>-->
 
-                                        <Border  BorderThickness="0" CornerRadius="2">
-                                            <Image Source="D:\tcp_auto\tcp_auto\Image\deleteB.png"  Stretch="Uniform"/>
+                                        <Border BorderThickness="0" CornerRadius="2">
+                                            <Image Source="\Image\deleteB.png" Stretch="Uniform" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="true">
@@ -457,22 +550,23 @@
                                 </Button.Template>
                             </Button>
 
-                            <Button  Margin="20 0 0 0" 
-                        Width="20"                     
-                        Height="20"
-                        ToolTip="上移应答键值对"
-                            ToolTipService.InitialShowDelay="1" 
-                            ToolTipService.ShowDuration="2000" 
-                            ToolTipService.BetweenShowDelay="10000"   
-                                 Command="{Binding UpTaskCommand}">
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="20,0,0,0"
+                                Command="{Binding UpTaskCommand}"
+                                ToolTip="上移应答键值对"
+                                ToolTipService.BetweenShowDelay="10000"
+                                ToolTipService.InitialShowDelay="1"
+                                ToolTipService.ShowDuration="2000">
                                 <Button.Template>
-                                    <ControlTemplate  >
+                                    <ControlTemplate>
                                         <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
                                         <ContentPresenter Content="上移" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                     </Border>-->
-                                        <Border  BorderThickness="0" CornerRadius="2">
-                                            <Image Source="D:\tcp_auto\tcp_auto\Image\UpB.png"  Stretch="Uniform"/>
+                                        <Border BorderThickness="0" CornerRadius="2">
+                                            <Image Source="\Image\UpB.png" Stretch="Uniform" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="true">
@@ -482,22 +576,23 @@
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                            <Button  Margin="20 0 0 0" 
-                        Width="20"                     
-                        Height="20"
-                                  ToolTip="下移应答键值对"
-                            ToolTipService.InitialShowDelay="1" 
-                            ToolTipService.ShowDuration="2000" 
-                            ToolTipService.BetweenShowDelay="10000" 
-                        Command="{Binding DownTaskCommand}">
+                            <Button
+                                Width="20"
+                                Height="20"
+                                Margin="20,0,0,0"
+                                Command="{Binding DownTaskCommand}"
+                                ToolTip="下移应答键值对"
+                                ToolTipService.BetweenShowDelay="10000"
+                                ToolTipService.InitialShowDelay="1"
+                                ToolTipService.ShowDuration="2000">
                                 <Button.Template>
-                                    <ControlTemplate  >
+                                    <ControlTemplate>
                                         <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
                                         <Border.Background>#FBC12D</Border.Background>
                                         <ContentPresenter Content="下移" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
                                     </Border>-->
-                                        <Border  BorderThickness="0" CornerRadius="2">
-                                            <Image Source="D:\tcp_auto\tcp_auto\Image\downB.png"  Stretch="Uniform"/>
+                                        <Border BorderThickness="0" CornerRadius="2">
+                                            <Image Source="\Image\downB.png" Stretch="Uniform" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="true">
@@ -508,13 +603,13 @@
                                 </Button.Template>
                             </Button>
 
-                            <!--<Button  Margin="20 0 0 0" 
-                        Width="20"                     
+                            <!--<Button  Margin="20 0 0 0"
+                        Width="20"
                         Height="20"
                                   ToolTip="延迟应答"
-                            ToolTipService.InitialShowDelay="1" 
-                            ToolTipService.ShowDuration="2000" 
-                            ToolTipService.BetweenShowDelay="10000" 
+                            ToolTipService.InitialShowDelay="1"
+                            ToolTipService.ShowDuration="2000"
+                            ToolTipService.BetweenShowDelay="10000"
                         Command="{Binding DelayTaskCommand}">
                                 <Button.Template>
                                     <ControlTemplate  >
@@ -531,7 +626,7 @@
                             </Button>-->
                         </WrapPanel>
                         <!--<WrapPanel Margin="0 20 0 0">
-                        <Button                   
+                        <Button
                         Width="60"
                         Height="25"
                         Command="{Binding ExportCommand}">
@@ -545,8 +640,8 @@
                             </Button.Template>
                         </Button>
 
-                        <Button  Margin="20 0 0 0" 
-                        Width="60"                     
+                        <Button  Margin="20 0 0 0"
+                        Width="60"
                         Height="25"
                         Command="{Binding ImportCommand}">
                             <Button.Template>
@@ -559,34 +654,56 @@
                             </Button.Template>
                         </Button>
                     </WrapPanel>-->
-                        <WrapPanel Margin=" 0 10 0 0">
-                            <TextBlock Text="延迟Delay(ms)"  VerticalAlignment="Center"/>
-                            <Border Grid.Row="1" Margin="5 0 0 0" Background="White"  VerticalAlignment="Top" MinWidth="120" HorizontalAlignment="Stretch" CornerRadius="3" BorderBrush="Gray" BorderThickness="0.5"  Padding="2">
-                                <TextBox                         
-                            x:Name="DelayTask"
-                            BorderThickness="0" 
-                            Background="Transparent"                        
-                            VerticalContentAlignment="Center"
-                            VerticalAlignment="Center"
-                            />
+                        <WrapPanel Margin="0,10,0,0">
+                            <TextBlock VerticalAlignment="Center" Text="延迟Delay(ms)" />
+                            <Border
+                                Grid.Row="1"
+                                MinWidth="120"
+                                Margin="5,0,0,0"
+                                Padding="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="0.5"
+                                CornerRadius="3">
+                                <TextBox
+                                    x:Name="DelayTask"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0" />
                             </Border>
                         </WrapPanel>
                     </StackPanel>
                 </Grid>
             </Border>
-            
+
         </Grid>
-        
-        <Separator Grid.Column="5" BorderBrush="White" BorderThickness="1" Margin="10 0">
+
+        <Separator
+            Grid.Column="5"
+            Margin="10,0"
+            BorderBrush="White"
+            BorderThickness="1">
             <Separator.LayoutTransform>
                 <RotateTransform Angle="90" />
             </Separator.LayoutTransform>
         </Separator>
 
-        <Grid Grid.Column="6" >
-            <Border Background="#F7F7F8" Padding="15" CornerRadius="5">
+        <Grid Grid.Column="6">
+            <Border
+                Padding="15"
+                Background="#F7F7F8"
+                CornerRadius="5">
                 <Border.Effect>
-                    <DropShadowEffect  BlurRadius="5" Color="Black" Direction="270" Opacity="0.5" RenderingBias="Performance"  ShadowDepth="1">
+                    <DropShadowEffect
+                        BlurRadius="5"
+                        Direction="270"
+                        Opacity="0.5"
+                        RenderingBias="Performance"
+                        ShadowDepth="1"
+                        Color="Black">
                         <Storyboard.TargetProperty>
                             BlurRadius
                         </Storyboard.TargetProperty>
@@ -594,28 +711,46 @@
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="数据发送区 Data-Send Zone"  FontWeight="Bold"/>
+                    <TextBlock FontWeight="Bold" Text="数据发送区 Data-Send Zone" />
 
-                    <Border Grid.Row="1" MinWidth="100"  Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="5" Padding="2" Background="White">
-                        <TextBox  Margin=" 2 0 0 0"
-                    x:Name="SendData"
-                        BorderThickness="0" 
-                    Background="White" />
+                    <Border
+                        Grid.Row="1"
+                        MinWidth="100"
+                        Margin="0,5,0,0"
+                        Padding="2"
+                        Background="White"
+                        BorderBrush="Gray"
+                        BorderThickness="0.5"
+                        CornerRadius="5">
+                        <TextBox
+                            x:Name="SendData"
+                            Margin="2,0,0,0"
+                            Background="White"
+                            BorderThickness="0" />
                     </Border>
 
-                    <Button  Grid.Row="2"     Margin="0 5 0 0"   HorizontalAlignment="Left"     
+                    <Button
+                        Grid.Row="2"
                         Width="100"
-                        Height="25"        
-                     Click="SendDataCommand">
-                        <Button.Template >
-                            <ControlTemplate  >
-                                <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="6">
+                        Height="25"
+                        Margin="0,5,0,0"
+                        HorizontalAlignment="Left"
+                        Command="{Binding SendDataCommand}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Border
+                                    BorderBrush="Gray"
+                                    BorderThickness="0"
+                                    CornerRadius="6">
                                     <Border.Background>#FBC12D</Border.Background>
-                                    <ContentPresenter Content="发送数据" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
+                                    <ContentPresenter
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Content="发送数据" />
                                 </Border>
                             </ControlTemplate>
                         </Button.Template>
