@@ -1,6 +1,8 @@
-﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using PropertyChanged;
 using SuperSimpleTcp;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,21 @@ using System.Windows.Threading;
 
 namespace tcp_auto
 {
-    public class MainWindowViewModel : BaseClass
+    public enum MessageDirection
+    {
+        from,
+        to
+    }
+    public class CommunicationLog
+    {
+        public string Message { get; set; }
+        public string RelatedIPPort { get; set; }
+        public DateTime Time { get; set; }
+        public MessageDirection Direction { get; set; }
+    }
+
+    [AddINotifyPropertyChangedInterface]
+    public class MainWindowViewModel : ObservableObject
     {
         //每次软件打开   自动获取本机ipaddress example——"10.198.75.60"
         public static string _ipaddress = null;
@@ -50,31 +66,17 @@ namespace tcp_auto
 
 
 
-        private ObservableCollection<MainModel> _dataDridKVs;
+        private ObservableCollection<EchoKeyValuePair> _dataDridKVs;
 
-        private ObservableCollection<string> comboIp;
-
-        public ObservableCollection<string> ComboIps
-        {
-            get { return comboIp; }
-            set
-            {
-                comboIp = value;
-                NotifyChanged();
-            }
-        }
+        public ObservableCollection<string> LocalIps { get; set; } = new ObservableCollection<string>();
         public string SelectedIp { get; set; }
         public int PortNum { get; set; }
-        public string DataLog { get; set; }
-		public MainWindowViewModel()
+        public ObservableCollection<CommunicationLog> DataLog { get; set; } = new ObservableCollection<CommunicationLog>();
+        public string SendMessage { get; set; }
+        public ObservableCollection<string> ListheningClients { get; set; } = new ObservableCollection<string>();
+
+        public MainWindowViewModel()
         {
-            InitData();
-            //index
-            ipaddress();
-            //readDatagrid();
-            comboDataShow();
-			readPort();
-			readIp();
 			initialSoftware();
 		}
 		SimpleTcpServer server;
@@ -89,11 +91,25 @@ namespace tcp_auto
                 string serverAddress = SelectedIp.ToString() + ":" + this.PortNum.ToString();
                 server = new SimpleTcpServer(serverAddress);
                 server.Events.DataReceived += Events_DataReceived;
+                server.Events.ClientConnected += ClientConnected;
+                server.Events.ClientDisconnected += ClientDisConnected;
                 server.Start();
             }
 
         });
         }
+
+        private void ClientDisConnected(object? sender, ConnectionEventArgs e)
+        {
+
+            App.Current.Dispatcher.Invoke(() => ListheningClients.Remove(e.IpPort));
+        }
+
+        private void ClientConnected(object? sender, ConnectionEventArgs e)
+        {
+            App.Current.Dispatcher.Invoke(()=> ListheningClients.Add(e.IpPort));
+        }
+        public string SelectedClient { get; set; }
         public ICommand SendDataCommand { get => new RelayCommand(() =>
         {
             if (server == null)
@@ -101,432 +117,139 @@ namespace tcp_auto
                 MessageBox.Show("请先连接客户端再发送数据");
                 return;
             }
-            //要发送的内容     一个一个发
-
-            //获取client的IpPort   再发送
             var allClients = server.GetClients();
             List<string> clientsList = allClients.ToList();
             var first = clientsList[0];
-
-            server.Send(first, DataLog);
-
-            //接收到    client发送的数据    时间显示
-            //string currentTime = DateTime.Now.ToString();
+            if (SendMessage.Length > 0 && SelectedClient != null)
+            {
+                SendWithLog(SelectedClient, SendMessage);
+            }
         });
         }
-		public void readPort()
+        public bool AlwaysScrollToEnd { get; set; }
+
+        public void readPort()
 		{
 			if (!File.Exists(@"IpPort.txt"))
 			{
-				//不存在文件
 				PortNum = 8888;
-
 				return;
 			}
 			else
 			{
-				//读取
-				//return;
 				string[] defLines = File.ReadAllLines(@"IpPort.txt");
 				for (int i = 0; i < defLines.Length; i++)
 				{
-					//split
 					string item = defLines[i];
 					string[] values = item.Split(',');
-
-					//this.IpAddress.Text = values[0].ToString();
 					PortNum = Convert.ToInt32(values[1]);
-					//this.IpCombo.Text = _ipaddress;
-					//this.IpCombo.Text = values[0].ToString();
 				}
 			}
 		}
 
-		public void readIp()
-		{
-			if (!File.Exists(@"ipComboInitial.txt"))
-			{
-				//不存在文件
-				return;
-			}
-			else
-			{
 
-				string[] defLines = File.ReadAllLines(@"ipComboInitial.txt");
-				for (int i = 0; i < defLines.Length; i++)
-				{
-					//split
-					string item = defLines[i];
-					//string[] values = item.Split(',');
-					SelectedIp = item;
-				}
-			}
-		}
+        
         public int DelayTaskTime { get; set; } = 0;
 		private void Events_DataReceived(object? sender, DataReceivedEventArgs e)
 		{
-			//check的true false
-			var clientData = e.Data;
+            var clientData = e.Data;
 			var byteArray = clientData.ToArray();
-			string getContent = System.Text.Encoding.Default.GetString(byteArray);
+			string getContent = System.Text.Encoding.ASCII.GetString(byteArray);
 
-			//e  client的IpPort
-			var clientIpPort = e.IpPort.ToString();
-            string this_time_log = "";
-			this_time_log = DateTime.Now.ToShortDateString()+ " " + DateTime.Now.ToLongTimeString() +":"+ DateTime.Now.Millisecond + " from " + clientIpPort + "\r\n" + getContent + "\r\n";
-				//接收到    client发送的数据    时间显示
-
-                //var aa=DataDridKVs[SelectedIndex].Use;
-                var allReply = DataDridKVs.Where(a => a.DataKey == getContent && a.IsEnable).ToList();
+            CommunicationLog newItem = new CommunicationLog()
+            {
+                RelatedIPPort = e.IpPort,
+                Message = System.Text.Encoding.ASCII.GetString(byteArray),
+                Direction = MessageDirection.from,
+                Time = DateTime.Now
+            };
+            App.Current.Dispatcher.Invoke(()=> DataLog.Add(newItem));
+            var allReply = DataDridKVs.Where(a => a.Key == getContent && a.IsEnable).ToList();
 				if (allReply.Count > 0)
 				//if (dictionary.ContainsKey(getContent))
 				{
                 foreach (var item in allReply)
                 {
-
-					//server 发送数据   返回给client（不要忘记发送）
-					string serverSend = item.DataValue;
-
+					string serverSend = item.Value;
 						Thread.Sleep(DelayTaskTime);
-						server.Send(clientIpPort, serverSend);
-					this_time_log += DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + " to " + clientIpPort + "\r\n" + serverSend + "\r\n";
-
+                    SendWithLog(e.IpPort, serverSend);
 				}
 				}
-            DataLog = this_time_log;
 		}
+        void SendWithLog(string targetIPPort,string message)
+        {
+            server.Send(targetIPPort, message);
+            CommunicationLog newItem = new CommunicationLog()
+            {
+                RelatedIPPort = targetIPPort,
+                Message= message,
+                Direction=MessageDirection.to,
+                Time = DateTime.Now
+            };
+            App.Current.Dispatcher.Invoke(() => DataLog.Add(newItem));
+        }
 		private void initialSoftware()
 		{
-
-			string[] defLines = File.ReadAllLines("Data.txt");
-			for (int i = 0; i < defLines.Length; i++)
-			{
-				//split
-				string item = defLines[i];
-				string[] values = item.Split("<-->");
-				DataDridKVs.Add(new MainModel() { DataKey = values[0], DataValue = values[1] });
-			}
-
-			//存储     path和       content的全部数据
-			//string line = $"{this.IpAddress.Text},{this.PortNum.Text}\n";
-			//System.IO.File.WriteAllText(@"IpPort.txt", line);
-
-			//再存储一个 放入集合中
-			//string fromTextBox = $"{this.IpAddress.Text},{this.PortNum.Text}";
-			string fromTextBox = $"{SelectedIp},{this.PortNum}";
-			List<string> ipCombo = new List<string>();
-			ipCombo.Add("127.0.0.1,8888");
-			ipCombo.Add("0.0.0.0,8888");
-			ipCombo.Add(fromTextBox);
-			System.IO.File.WriteAllLines(@"IpPortCom.txt", ipCombo);
-		}
-		private void InitData()
-        {
-            DataDridKVs = new ObservableCollection<MainModel>();
-            ComboIps = new ObservableCollection<string>();
-            //便于查看  之后删除
-            //DataDridKVs.Add(new MainModel()
-            //{
-            //    DataKey = "111",
-            //    DataValue = "222"
-            //});
+            foreach (var item in Config.Instance.EchoKeyValuePairs)
+            {
+                DataDridKVs.Add(item);
+            }
+            comboDataShow();
+            string[] lastIpPort = Config.Instance.LastIpPort.Split(',');
+            if (lastIpPort.Length == 2)
+            {
+                SelectedIp = lastIpPort[0];
+                PortNum = Convert.ToInt32(lastIpPort[1]);
+            }
         }
+
 
 
         public void comboDataShow()
         {
-
-            ComboIps.Add(_ipaddress);
-            ComboIps.Add("127.0.0.1");
-            ComboIps.Add("0.0.0.0");
-            //存储 初始化打开界面不用选   再存储一个 放入集合中
-            List<string> ipComboInitial = new List<string>();
-            ipComboInitial.Add(_ipaddress);
-            System.IO.File.WriteAllLines(@"ipComboInitial.txt", ipComboInitial);
-
-            //back
-            //string[] allIp = File.ReadAllLines(@"IpPort.txt");
-            //for (int i = 0; i < allIp.Length; i++)
-            //{
-            //    //split
-            //    string item = allIp[i];
-            //    string[] values = item.Split(',');
-            //    ComboIps.Add(new ComboIp()
-            //    {
-            //        ComboIpAdd = values[0]
-            //    });
-            //}
-        }
-
-        public void readDatagrid()
-		{
-            if (!File.Exists("Data.txt"))
+            IPAddress[] ip = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (var item in ip)
             {
-                File.Create("Data.txt");
-
-			}
-            string[] defLines = File.ReadAllLines(@"Data.txt");
-            for (int i = 0; i < defLines.Length; i++)
-            {
-                //split
-                string item = defLines[i];
-                string[] values = item.Split("<-->");
-
-                if (values.Length > 1)
+                if (item.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
-                    DataDridKVs.Add(new MainModel()
-                    {
-                        DataKey = values[0],
-                        DataValue = values[1],
-                    });
+                    LocalIps.Add(item.ToString());
                 }
             }
+            LocalIps.Add("127.0.0.1");
+            LocalIps.Add("0.0.0.0");
         }
 
-    
 
 
-
-
-        public ObservableCollection<MainModel> DataDridKVs
-        {
-            //DataDridKVs.Add(new MainModel()
-            //        {
-            //DataKey = KeyMess,
-            //            DataValue = ValueMess
-            //        });
-
-            //get { return _dataDridKVs; }
-            //set
-            //{
-            //    _dataDridKVs = value;
-            //    NotifyChanged();
-            //}
-
-            get { return _dataDridKVs; }
-            set
-            {
-                _dataDridKVs = value;
-                NotifyChanged();
-            }
-        }
-
+        public ObservableCollection<EchoKeyValuePair> DataDridKVs { get; set; } = new ObservableCollection<EchoKeyValuePair>();
       
-       
+
+        public EchoKeyValuePair SelectedItem { get; set; }
+
+        public bool EchoEnable { get; set; }
 
 
+        public string KeyMess { get; set; }
 
 
+        public string ValueMess { get; set; }
 
 
-        //index
-        private int _selectedIndex = -1;
-
-        public int SelectedIndex
-        {
-            get { return _selectedIndex; }
-            set
-            {
-                _selectedIndex = value;
-                NotifyChanged();
-            }
-        }
-
-        //Item
-        private MainModel _selectedItem;
-
-        public MainModel SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                _selectedItem = value;
-                NotifyChanged();
-            }
-        }
-        
-        //是否启用
-        private bool _useKV;
-
-        public bool UseKV
-        {
-            get { return _useKV; }
-            set
-            {
-                _useKV = value;
-                NotifyChanged();
-            }
-        }
-
-
-        //键
-        private string _keyMess;
-
-        public string KeyMess
-        {
-            get { return _keyMess; }
-            set
-            {
-                _keyMess = value;
-                NotifyChanged();
-            }
-        }
-
-        //值
-        private string _valueMess;
-
-        public string ValueMess
-        {
-            get { return _valueMess; }
-            set
-            {
-                _valueMess = value;
-                NotifyChanged();
-            }
-        }
-
-
-        public ICommand UpTaskCommand
-        {
-            get
-            {
-                return new RelayCommand<object>((obj) =>
-                {
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        if (SelectedIndex == -1)
-                        {
-                            MessageBox.Show("请先选择需要上移的任务");
-                            return;
-                        }
-                        else if (SelectedIndex <= 0)
-                        {
-                            MessageBox.Show("当前任务已经是第一个任务");
-                            return;
-                        }
-
-                        DataDridKVs.Move(SelectedIndex, SelectedIndex - 1);
-
-                        //存储     path和       content的全部数据
-                        string allContents = "";
-                        for (int i = 0; i < DataDridKVs.Count; i++)
-                        {
-                            MainModel item = DataDridKVs[i];
-                            string line = "";
-                            line += $"{item.DataKey},{item.DataValue}\n";
-                            allContents += line;
-                        }
-
-                        System.IO.File.WriteAllText(@"Data.txt", allContents);
-                    });
-                });
-            }
-        }
-
-        //public ICommand DelayTaskCommand
-        //{
-        //    get
-        //    {
-        //        return new RelayCommand<object>((obj) =>
-        //        {
-        //            App.Current.Dispatcher.Invoke(() =>
-        //            {
-        //                //InputWindow isw = new InputWindow();
-        //                //isw.Title = "给新页面命名";
-        //                //isw.ShowDialog();
-        //                Window newWin = new Window();
-        //                //newWin.Show();// 两个窗口都可用
-        //                newWin.Title = "DelayWindow";
-        //                newWin.ShowDialog();
-
-        //                //DelayWindow  delayWindow= new DelayWindow();
-        //                //delayWindow.InitializeComponent();
-        //                ////delayWindow
-
-        //            });
-        //        });
-        //    }
-        //}
-
-
-
-        public ICommand DownTaskCommand
-        {
-            get
-            {
-                return new RelayCommand<object>((obj) =>
-                {
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        var lastIndex = DataDridKVs.Count;
-                        if (SelectedIndex == -1)
-                        {
-                            MessageBox.Show("请先选择需要下移的任务");
-                            return;
-                        }
-                        else if (SelectedIndex == lastIndex - 1)
-                        {
-                            MessageBox.Show("当前任务已经是最后一个任务");
-                            return;
-                        }
-                        DataDridKVs.Move(SelectedIndex, SelectedIndex + 1);
-                        
-                        //存储     path和       content的全部数据
-                        string allContents = "";
-                        for (int i = 0; i < DataDridKVs.Count; i++)
-                        {
-                            MainModel item = DataDridKVs[i];
-                            string line = "";
-                            line += $"{item.DataKey},{item.DataValue}\n";
-                            allContents += line;
-                        }
-
-                        System.IO.File.WriteAllText(@"Data.txt", allContents);
-                    });
-                });
-            }
-        }
-        //private void DownTask()
-        //{
-        //    var lastIndex = DataDridKVs.Count;
-        //    if (SelectedIndex == -1)
-        //    {
-        //        MessageBox.Show("请先选择需要操作的任务");
-        //        return;
-        //    }
-        //    else if (SelectedIndex == lastIndex - 1)
-        //    {
-        //        MessageBox.Show("当前任务已经是最后一个任务");
-        //        return;
-        //    }
-        //    DataDridKVs.Move(SelectedIndex, SelectedIndex + 1);
-        //}
-
-        /// <summary>
-        /// 增加键值对
-        /// </summary>
         public ICommand AddCommand
         {
             get
             {
                 return new RelayCommand<object>((obj) =>
                 {
-                    //if (!string.IsNullOrEmpty(KeyMess) && !string.IsNullOrEmpty(ValueMess))
                     if (!string.IsNullOrEmpty(KeyMess))
                     {
-
-                        DataDridKVs.Add(new MainModel()
+                        DataDridKVs.Add(new EchoKeyValuePair()
                         {
-                            DataKey = KeyMess,
-                            DataValue = ValueMess,
+                            Key = KeyMess,
+                            Value = ValueMess,
                             IsEnable = true
                         });
-
-
-                        //存储     path和       content的全部数据
                         SaveReplyData();
-
-
 					}
                     else
                     {
@@ -566,17 +289,11 @@ namespace tcp_auto
         }
         void SaveReplyData()
         {
-			string allContents = "";
-			for (int i = 0; i < DataDridKVs.Count; i++)
-			{
-				MainModel item = DataDridKVs[i];
-				string line = "";
-				line += $"{item.DataKey}<-->{item.DataValue}\n";
-				allContents += line;
-			}
+            Config.Instance.LastIpPort = $"{SelectedIp},{PortNum}";
+            Config.Instance.EchoKeyValuePairs = new List<EchoKeyValuePair>(DataDridKVs);
+            Config.Instance.Save();
 
-			System.IO.File.WriteAllText(@"Data.txt", allContents);
-		}
+        }
 
 		public ICommand ExportCommand
         {
@@ -594,9 +311,9 @@ namespace tcp_auto
                     //    string allContents = "";
                     //    for (int i = 0; i < DataDridKVs.Count; i++)
                     //    {
-                    //        MainModel item = DataDridKVs[i];
+                    //        EchoKeyValuePair item = DataDridKVs[i];
                     //        string line = "";
-                    //        line += $"{item.DataKey},{item.DataValue}\n";
+                    //        line += $"{item.Key},{item.Value}\n";
                     //        allContents += line;
                     //    }
                     //    File.WriteAllText(filePaths, allContents);
@@ -612,23 +329,19 @@ namespace tcp_auto
                 return new RelayCommand<object>((obj) =>
                 {
                     OpenFileDialog fileDialog = new OpenFileDialog();
-                    fileDialog.Filter = "键值匹配|*.txt";
+                    fileDialog.Filter = "配置文件|*.config";
                     if (fileDialog.ShowDialog() == true)
                     {
                         var filePaths = fileDialog.FileName;
-                        string[] defLines = File.ReadAllLines(filePaths);
-                        for (int i = 0; i < defLines.Length; i++)
+                        string json = File.ReadAllText(filePaths);
+                        Config importedConfig = JsonConvert.DeserializeObject<Config>(json);
+                        
+                        if (importedConfig != null)
                         {
-                            //split
-                            string item = defLines[i];
-                            string[] values = item.Split(',');
-
-                            DataDridKVs.Add(new MainModel()
+                            foreach (var item in importedConfig.EchoKeyValuePairs)
                             {
-                                DataKey = double.Parse(values[0].Replace(" ", "")).ToString(),
-                                DataValue = double.Parse(values[1].Replace(" ", "")).ToString(),
-                            });
-                            //Messenger.Default.Send<Tuple<string, string>>(new Tuple<string, string>(KeyMess, ValueMess), "SendMess");
+                                DataDridKVs.Add(item);
+                            }
                         }
                         
                     }

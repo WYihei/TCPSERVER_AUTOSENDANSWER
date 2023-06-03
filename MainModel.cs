@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace tcp_auto
 {
     [AddINotifyPropertyChangedInterface]
-    public class MainModel
+    public class EchoKeyValuePair
     {
-        public string DataKey { get; set; }
-        public string DataValue { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
         public bool IsEnable { get; set; }
     }
 }

@@ -4,10 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:tcp_auto"
+      xmlns:converter ="clr-namespace:tcp_auto.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
-    Width="1000"
+    Width="1200"
     Height="500"
+    xmlns:attach="clr-namespace:tcp_auto.UserControls.Attach"
     d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
     mc:Ignorable="d">
     <!--  Width="800" Title="TCP SERVER"  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"  ItemsSource="{Binding DataList}" Background="#F7F7F8"  -->
@@ -16,6 +18,15 @@
         <TextBlock x:Key="serverStr" Text="请初始化" />
         <!--<TextBlock x:Key="startKV" Text="请开启应答"></TextBlock>-->
         <TextBlock x:Key="startKV" Text="请开启SERVER" />
+        <converter:StringJoinConverter x:Key="StringJoinConverter"/>
+        <Style TargetType="TextBlock" x:Key="LogTextStyle">
+            <Setter Property="Foreground" Value="LightGreen"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Direction}" Value="{x:Static local:MessageDirection.from}">
+                    <Setter Property="Foreground" Value="LightBlue"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="10">
@@ -26,7 +37,7 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="0.5*" />
 
             <!--<ColumnDefinition Width="150"/>
             <ColumnDefinition Width="auto"/>
@@ -58,39 +69,7 @@
                 </Border.Effect>
                 <StackPanel>
                     <TextBlock FontWeight="Bold" Text="TCP SERVER" />
-                    <!--<Border Margin="0 5 0 0" Background="Transparent" CornerRadius="3" >
-                    <ComboBox
-                    IsDropDownOpen="False"
-                    Name="协议类型com"
-                    Height="25"
-                    IsReadOnly="True"
-                    SelectedIndex="0" >
-                    </ComboBox>
-                </Border>-->
-
-                    <!--  之后改  -->
-                    <!--<Button Height="25" Margin="0 5 0 0"  x:Name="linkButton" >
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <EventSetter Event="Click"  Handler="One_Click"/>
-                                <Setter Property="Background" Value="#FBC12D"/>
-
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-
-                                            <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="6" Background="{TemplateBinding Background}" >
-                                                <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-
-                                            </Border>
-
-
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>-->
+                    
 
                     <TextBlock Margin="0,5,0,0" Text="Ip Address" />
 
@@ -102,12 +81,6 @@
                         BorderThickness="0.5"
                         CornerRadius="3">
                         <StackPanel>
-                            <!--<TextBox
-                                x:Name="IpAddress"
-                                BorderThickness="0" Background="Transparent"
-                                VerticalContentAlignment="Center"
-                                VerticalAlignment="Center"
-                                 Height="25"  />-->
 
                             <ComboBox
                                 x:Name="IpCombo"
@@ -118,11 +91,9 @@
                                 BorderThickness="0"
                                 IsEditable="False"
                                 IsReadOnly="True"
-                                ItemsSource="{Binding ComboIps}"
+                                ItemsSource="{Binding LocalIps}"
                                 SelectedItem="{Binding SelectedIp}">
-                                <!--<ComboBoxItem Content="127.0.0.1"/>
-                                <ComboBoxItem Content="0.0.0.0"/>-->
-                                <!--  SelectedItem="{Binding ComboIpAdd}"  -->
+
                             </ComboBox>
 
                         </StackPanel>
@@ -138,7 +109,6 @@
                         BorderBrush="Gray"
                         BorderThickness="0.5"
                         CornerRadius="3">
-                        <!--  Text="8080"  -->
                         <TextBox
                             x:Name="PortNum"
                             Height="25"
@@ -183,28 +153,12 @@
                         </ToggleButton.Style>
                     </ToggleButton>
 
-                    <!--  原 back  -->
-                    <!--<Button
-                    x:Name="linkButton"
-                    Margin="0 40 0 0"
-                    Height="30"
-                    Click="LinkCommand"
-                    Background="#FBC12D"  >
-                    <Button.Template >
-                        <ControlTemplate  >
-                            <Border BorderBrush="Transparent"  BorderThickness="0" CornerRadius="2" Background="{TemplateBinding Background}" >
-                                <ContentPresenter Content="{DynamicResource serverStr}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>-->
 
 
                 </StackPanel>
             </Border>
         </Grid>
 
-        <!--<Separator Grid.Column="1"  Background="LightGray" />-->
         <Separator
             Grid.Column="1"
             Margin="10,0,0,0"
@@ -216,7 +170,6 @@
         </Separator>
 
 
-        <!--  现在方便看 以后删除  -->
         <Grid Grid.Column="2" Margin="10,0,0,0">
             <Border
                 Padding="15"
@@ -254,61 +207,37 @@
                         BorderBrush="Gray"
                         BorderThickness="0.5"
                         CornerRadius="5">
-                        <!--  Width="150"  -->
-                        <!--<TextBox
-                        x:Name="DataShow"
-                        BorderThickness="0"
-                        Background="Transparent"  />-->
-                        <RichTextBox
-                            x:Name="DataShow"
-                            local:RichTextBoxHelper.RichText="{Binding DataLog, Mode=TwoWay}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            VerticalScrollBarVisibility="Auto"
-                            VirtualizingPanel.IsVirtualizing="True" />
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollViewer attach:ScrollViewerExtensions.AlwaysScrollToEnd="{Binding AlwaysScrollToEnd}" VerticalScrollBarVisibility="auto">
+
+                                <ItemsControl ItemsSource="{Binding DataLog}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="0 5">
+                                                <StackPanel>
+                                                <TextBlock >
+                                                    <TextBlock.Text>
+                                                        <MultiBinding Converter="{StaticResource StringJoinConverter}" ConverterParameter="   ">
+                                                            <Binding Path="Time"/>
+                                                            <Binding Path="Direction"/>
+                                                            <Binding Path="RelatedIPPort"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding Message}" FontSize="14" Style="{StaticResource LogTextStyle}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <CheckBox Grid.Row="1" Content="自动滚动" IsChecked="{Binding AlwaysScrollToEnd}"/>
+                        </Grid>
                     </Border>
-
-                    <!--<Button  Grid.Row="3"     Margin="0 5 0 0"   HorizontalAlignment="Left"
-                        Width="100"
-                        Height="25"
-                     Click="StartKeyValue"
-                     x:Name="askAnswerButton">
-                        <Button.Template >
-                            <ControlTemplate  >
-                                <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="6">
-                                    <Border.Background>#FBC12D</Border.Background>
-                                    <ContentPresenter Content="{DynamicResource startKV}"  HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>-->
-
-                    <!--<TextBlock
-                    Text="数据发送区(考虑删除)"
-                    Margin="0 40 0 0" />-->
-
-                    <!--  暂时注释  -->
-                    <!--<Border Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2">
-                    <TextBox
-                        x:Name="DataSend"
-                        BorderThickness="0"
-                        Background="Transparent"
-                        Height="50" />
-                </Border>-->
-
-                    <!--<Button
-                    Margin="0 5 0 0"
-                    Height="30"
-                    Click="Send_Data">
-                    <Button.Template >
-                        <ControlTemplate  >
-                            <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                <Border.Background>#FBC12D</Border.Background>
-                                <ContentPresenter Content="发送数据" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>-->
                 </Grid>
             </Border>
 
@@ -326,7 +255,6 @@
         </Separator>
 
         <Grid Grid.Column="4">
-            <!--<StackPanel />-->
             <Border
                 Padding="15"
                 Background="#F7F7F8"
@@ -350,7 +278,6 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="auto" />
-                        <!--<RowDefinition Height="auto"/>-->
                     </Grid.RowDefinitions>
                     <TextBlock FontWeight="Bold" Text="应答键值" />
                     <StackPanel
@@ -359,7 +286,6 @@
                         VerticalAlignment="Top">
                         <WrapPanel>
                             <TextBlock VerticalAlignment="Center" Text="键" />
-                            <!--<Border Margin="0 5 0 30" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="3" Padding="2" Grid.Row="1">-->
                             <Border
                                 MinWidth="220"
                                 Margin="5,0,0,0"
@@ -406,27 +332,6 @@
                     </StackPanel>
 
 
-                    <!--<DataGrid Margin="0 5 0 0"
-                          Height="200"
-                            x:Name="KeyAndValue"
-
-                            AutoGenerateColumns="False"
-                            Background="White"
-                            BorderThickness="0"
-                            CanUserAddRows="False"
-                            CanUserDeleteRows="False"
-                            FontSize="12"
-                            GridLinesVisibility="Horizontal"
-                            HeadersVisibility="All"
-                            RowHeight="24"
-
-                            SelectedIndex="{Binding SelectedIndex}"
-                            SelectedItem="{Binding SelectedItem}"
-                            ItemsSource="{Binding DataDridKVs}"  >-->
-
-
-                    <!--  Height="*200" Height="100"  -->
-                    <!--  Margin="0 5 0 0" BorderBrush="Gray" BorderThickness="0.5" CornerRadius="5" Padding="2" Grid.Row="1" Background="White"  -->
                     <Border
                         Grid.Row="2"
                         Margin="0,5,0,5"
@@ -464,11 +369,11 @@
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn
                                         MinWidth="120"
-                                        Binding="{Binding DataKey}"
+                                        Binding="{Binding Key}"
                                         Header="键 Key" />
                                     <DataGridTextColumn
                                         MinWidth="120"
-                                        Binding="{Binding DataValue}"
+                                        Binding="{Binding Value}"
                                         Header="值 Val" />
                                 </DataGrid.Columns>
                             </DataGrid>
@@ -495,8 +400,7 @@
                                     <ControlTemplate>
                                         <Border BorderThickness="0" CornerRadius="2">
                                             <WrapPanel>
-                                                <Image Source="\Image\addB.png" Stretch="Uniform" />
-                                                <!--<ContentPresenter Content="hh" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>-->
+                                                <Image Source="\Resources\Image\addB.png" Stretch="Uniform" />
                                             </WrapPanel>
                                         </Border>
                                         <ControlTemplate.Triggers>
@@ -508,19 +412,6 @@
 
                                 </Button.Template>
                             </Button>
-                            <!--<Button
-                        Width="60"
-                        Height="25"
-                        Command="{Binding AddCommand}">
-                            <Button.Template >
-                                <ControlTemplate  >
-                                    <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                        <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="增应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>-->
 
                             <Button
                                 Width="20"
@@ -533,13 +424,10 @@
                                 ToolTipService.ShowDuration="2000">
                                 <Button.Template>
                                     <ControlTemplate>
-                                        <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                        <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="删应答" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                    </Border>-->
+        
 
                                         <Border BorderThickness="0" CornerRadius="2">
-                                            <Image Source="\Image\deleteB.png" Stretch="Uniform" />
+                                            <Image Source="\Resources\Image\deleteB.png" Stretch="Uniform" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="true">
@@ -561,12 +449,9 @@
                                 ToolTipService.ShowDuration="2000">
                                 <Button.Template>
                                     <ControlTemplate>
-                                        <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                        <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="上移" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                    </Border>-->
+  
                                         <Border BorderThickness="0" CornerRadius="2">
-                                            <Image Source="\Image\UpB.png" Stretch="Uniform" />
+                                            <Image Source="\Resources\Image\UpB.png" Stretch="Uniform" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="true">
@@ -587,12 +472,9 @@
                                 ToolTipService.ShowDuration="2000">
                                 <Button.Template>
                                     <ControlTemplate>
-                                        <!--<Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                        <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="下移" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                    </Border>-->
+ 
                                         <Border BorderThickness="0" CornerRadius="2">
-                                            <Image Source="\Image\downB.png" Stretch="Uniform" />
+                                            <Image Source="\Resources\Image\downB.png" Stretch="Uniform" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="true">
@@ -603,57 +485,9 @@
                                 </Button.Template>
                             </Button>
 
-                            <!--<Button  Margin="20 0 0 0"
-                        Width="20"
-                        Height="20"
-                                  ToolTip="延迟应答"
-                            ToolTipService.InitialShowDelay="1"
-                            ToolTipService.ShowDuration="2000"
-                            ToolTipService.BetweenShowDelay="10000"
-                        Command="{Binding DelayTaskCommand}">
-                                <Button.Template>
-                                    <ControlTemplate  >
-                                        <Border  BorderThickness="0" CornerRadius="2">
-                                            <Image Source="D:\tcp_auto\tcp_auto\Image\wait.png"  Stretch="Uniform"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="true">
-                                                <Setter Property="Opacity" Value="0.2" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>-->
+                            
                         </WrapPanel>
-                        <!--<WrapPanel Margin="0 20 0 0">
-                        <Button
-                        Width="60"
-                        Height="25"
-                        Command="{Binding ExportCommand}">
-                            <Button.Template >
-                                <ControlTemplate  >
-                                    <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                        <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="导出" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-
-                        <Button  Margin="20 0 0 0"
-                        Width="60"
-                        Height="25"
-                        Command="{Binding ImportCommand}">
-                            <Button.Template>
-                                <ControlTemplate  >
-                                    <Border BorderBrush="Gray"  BorderThickness="0" CornerRadius="2">
-                                        <Border.Background>#FBC12D</Border.Background>
-                                        <ContentPresenter Content="导入" HorizontalAlignment="Center" VerticalAlignment="Center" ></ContentPresenter>
-                                    </Border>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </WrapPanel>-->
+                        
                         <WrapPanel Margin="0,10,0,0">
                             <TextBlock VerticalAlignment="Center" Text="延迟Delay(ms)" />
                             <Border
@@ -726,15 +560,21 @@
                         BorderBrush="Gray"
                         BorderThickness="0.5"
                         CornerRadius="5">
+                        
                         <TextBox
                             x:Name="SendData"
                             Margin="2,0,0,0"
+                            Text="{Binding SendMessage,UpdateSourceTrigger=PropertyChanged}"
                             Background="White"
                             BorderThickness="0" />
                     </Border>
-
+                    <Grid Grid.Row="2" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
                     <Button
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Width="100"
                         Height="25"
                         Margin="0,5,0,0"
@@ -755,6 +595,8 @@
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
+                        <ComboBox Margin="10 0" Grid.Row="0"  ItemsSource="{Binding ListheningClients}" SelectedItem="{Binding SelectedClient}"/>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>
